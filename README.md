@@ -1,8 +1,106 @@
-# Vista
+# Vista - Enterprise Risk Management Platform
 
-**A modular, AI-powered observability and audit platform for enterprise systems**
+**A modern & modular, microservices-based audit system for AI-powered risk insights & management, compliance automation, and enterprise observability.**
+Vista helps engineering, compliance, and leadership teams monitor software health, generate audit summaries, and track system risk in a unified view — 
+all powered by real code telemetry and AI.
 
-Vista helps engineering, compliance, and leadership teams monitor software health, generate audit summaries, and track system risk in a unified view — all powered by real code telemetry and AI.
+## Project Structure
+
+```
+/vista
+│
+├── apps/                      # Application modules
+│   ├── frontend/             # Microfrontends (React)
+│   └── backend/              # Spring Boot backend
+│
+├── libs/                     # Shared libraries
+│   ├── shared-auth/         # Authentication utilities
+│   ├── shared-models/       # Data models
+│   └── shared-utils/        # Common utilities
+│
+├── ci/                      # CI/CD configurations
+├── docker/                  # Docker configurations
+├── docs/                    # Documentation
+├── scripts/                 # Utility scripts
+└── tests/                   # Test suites
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- Java 8 or 17: https://adoptium.net/ 
+- Maven: `brew install maven`
+  - mvn -N io.takari:maven:wrapper (if the ./mvnw command doesn't work)
+- Docker: https://www.docker.com/
+- OpenShift CLI (for deployment)
+
+### Local Development
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-org/vista.git
+   cd vista
+   ```
+
+2. Start the development environment:
+   ```bash
+   ./scripts/local-dev.sh
+   ```
+
+### Building
+- Backend: `cd apps/backend && ./mvnw spring-boot:run`
+<!-- ./mvnw clean package -->
+- Docker:
+`docker build -t vista-backend -f docker/backend/Dockerfile apps/backend`
+`docker run -p 8080:8080 vista-backend`
+- Docker background service:
+`docker run -d -p 8080:8080 vista-backend`
+<!-- # get the container ID -->
+`docker ps`    
+`docker stop <id>`
+
+- Frontend:
+yarn create nx-workspace@latest
+
+
+### Testing
+
+- Frontend: `cd apps/frontend && npm test`
+- Backend: `cd apps/backend && ./gradlew test`
+
+## Architecture
+
+The platform is built using a microservices architecture with the following components:
+
+- **Frontend**: React-based microfrontends
+  - Shell application for routing and layout
+  - Dashboard module for analytics
+  - Compliance panel for document management
+  - AI summary module for risk analysis
+
+- **Backend**: Spring Boot services
+  - RESTful APIs
+  - Document processing
+  - Risk analysis engine
+  - Authentication and authorization
+
+## Deployment
+
+The platform is designed to be deployed on OpenShift. See the `ci/openshift` directory for deployment configurations.
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🚀 Features
 
@@ -58,7 +156,7 @@ All of this powers your dashboards and summaries.
 
 ## 🛡️ Why Vista?
 
-In highly regulated environments like banking, visibility isn’t optional — it’s survival.  
+In highly regulated environments like banking, visibility isn't optional — it's survival.  
 Vista empowers teams to deliver fast, stay compliant, and stay informed — all backed by explainable AI and real-time system health.
 
 ## 👤 Author
@@ -72,3 +170,13 @@ Brandon Tyler Ward
 audit, ai, observability, spring-boot, react, langchain, fintech, compliance, sonarqube, tekton, openshift
 
 ---
+
+### Assistants:
+GPT create Scafold
+Cursor create project from scafold
+Create Java Backend with: https://start.spring.io/
+TS x DTO (https://quicktype.io/, https://openapi-generator.tech/)
+JDK: https://adoptium.net/ 
+
+docker build -t vista-backend -f docker/backend/Dockerfile apps/backend
+docker run -p 8080:8080 vista-backend

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vista-config
+data:
+  api_url: "https://vista-backend-vista.apps.example.com"
+  environment: "production"
+  log_level: "INFO"
+  cors_allowed_origins: "https://vista-frontend-vista.apps.example.com"
+  session_timeout: "3600"
+  max_upload_size: "10MB"
+  cache_ttl: "300"
+  rate_limit: "100"
+  feature_flags: |
+    {
+      "enable_ai_summary": true,
+      "enable_compliance_panel": true,
+      "enable_dashboard": true
+    }

@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ../../apps/frontend
+      dockerfile: ../../docker/frontend/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../../apps/frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_URL=http://localhost:8080
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ../../apps/backend
+      dockerfile: ../../docker/backend/Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../../apps/backend:/app
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/vista
+      - SPRING_DATASOURCE_USERNAME=vista
+      - SPRING_DATASOURCE_PASSWORD=vista
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=vista
+      - POSTGRES_USER=vista
+      - POSTGRES_PASSWORD=vista
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
