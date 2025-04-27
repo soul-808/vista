@@ -1,0 +1,13 @@
+<!-- health-check.component.html -->
+<div class="health-check-container">
+  <h2>System Health Status</h2>
+  
+  <div class="health-status" [ngClass]="{'up': status === 'UP', 'down': status === 'DOWN'}">
+    <span class="status-indicator"></span>
+    <span class="status-text">{{ status }}</span>
+  </div>
+  
+  <div class="error-message" *ngIf="error">
+    {{ error }}
+  </div>
+</div>

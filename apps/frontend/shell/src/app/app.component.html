@@ -1,0 +1,19 @@
+<div class="app-container">
+  <header>
+    <h1>Vista - Enterprise Risk Management</h1>
+    <nav>
+      <ul>
+        <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
+        <li><a routerLink="/health" routerLinkActive="active">Health Check</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+  
+  <footer>
+    <p>&copy; 2023 Vista Platform</p>
+  </footer>
+</div>

@@ -1,0 +1,12 @@
+{
+  "name": "@vista/frontend",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": [
+    "shell",
+    "shared",
+    "ai-summary",
+    "compliance-panel",
+    "dashboard"
+  ]
+}

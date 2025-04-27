@@ -1,3 +1,16 @@
 {
-  "packageManager": "yarn@4.9.1"
+  "name": "vista",
+  "packageManager": "yarn@4.9.1",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "apps/frontend/*",
+    "libs/*"
+  ],
+  "devDependencies": {
+    "@angular/cli": "^19.2.9"
+  },
+  "dependencies": {
+    "tslib": "^2.8.1"
+  }
 }

@@ -62,7 +62,13 @@ all powered by real code telemetry and AI.
 `docker stop <id>`
 
 - Frontend:
-yarn create nx-workspace@latest
+<!-- yarn create nx-workspace@latest (maybe later) --> 
+yarn add -D @angular/cli
+cd apps/frontend
+npx @angular/cli new shell --directory=shell --routing=true --style=scss
+yarn ng generate component components/health-check
+
+
 
 
 ### Testing
