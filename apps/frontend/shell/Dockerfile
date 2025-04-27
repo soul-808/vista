@@ -1,7 +1,7 @@
 # Path: apps/frontend/shell/Dockerfile
 
 # Stage 1: Build Angular shell app
-FROM node:18 AS build
+FROM --platform=$BUILDPLATFORM node:18 AS build
 
 WORKDIR /app
 
@@ -29,11 +29,13 @@ RUN echo "=== Contents of dist/shell ===" && \
     ls -la dist/shell/browser || true
 
 # Stage 2: Serve with NGINX
-FROM nginx:alpine
+FROM registry.access.redhat.com/ubi8/nginx-120:latest
 
 # Copy the built app to nginx html directory
-COPY --from=build /app/apps/frontend/shell/dist/shell/browser /usr/share/nginx/html
-COPY apps/frontend/shell/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/apps/frontend/shell/dist/shell/browser /opt/app-root/src
 
-EXPOSE 80
+# OpenShift expects the process to run as a non-root user
+USER 1001
+
+EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]

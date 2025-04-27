@@ -1,5 +1,5 @@
 # Build stage
-FROM maven:3.9.6-eclipse-temurin-17 AS build
+FROM --platform=$BUILDPLATFORM maven:3.9.6-eclipse-temurin-17 AS build
 
 WORKDIR /apps/backend
 
@@ -12,21 +12,13 @@ COPY apps/backend/src ./src
 RUN mvn clean package -DskipTests
 
 # Production stage
-FROM eclipse-temurin:17-jre
-
-# Create a non-root user
-RUN groupadd -r spring && useradd -r -g spring spring
-
-WORKDIR /apps/backend
+FROM registry.access.redhat.com/ubi8/openjdk-17:latest
 
 # Copy built jar from build stage
-COPY --from=build /apps/backend/target/*.jar app.jar
+COPY --from=build /apps/backend/target/*.jar /deployments/app.jar
 
-# Set ownership
-RUN chown spring:spring /apps/backend
-
-# Switch to non-root user
-USER spring
+# OpenShift runs containers with a random UID, no need to create a user
+USER 1001
 
 EXPOSE 8080
 
@@ -37,7 +29,8 @@ HEALTHCHECK --interval=30s --timeout=3s \
 # Set JVM options for better performance
 ENV JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseG1GC"
 
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+# The OpenShift base image expects this command
+CMD java $JAVA_OPTS -jar /deployments/app.jar
 
 
 # Multi-stage build notes:

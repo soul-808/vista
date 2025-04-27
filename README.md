@@ -20,7 +20,6 @@ all powered by real code telemetry and AI.
 │   └── shared-utils/        # Common utilities
 │
 ├── ci/                      # CI/CD configurations
-├── docker/                  # Docker configurations
 ├── docs/                    # Documentation
 ├── scripts/                 # Utility scripts
 └── tests/                   # Test suites
@@ -181,3 +180,16 @@ JDK: https://adoptium.net/
 
 docker build -t vista-backend -f docker/backend/Dockerfile apps/backend
 docker run -p 8080:8080 vista-backend
+
+<!-- For m3 mac and multiple platforms -->
+# Create a new builder instance
+docker buildx create --name mybuilder --driver docker-container --bootstrap
+
+# Use the new builder
+docker buildx use mybuilder
+
+# Now build and push the images
+docker buildx build --platform linux/amd64,linux/arm64 -t soul808/vista-frontend:latest --push -f apps/frontend/shell/Dockerfile .
+
+docker buildx create --use --name multiarch-builder
+docker buildx inspect --bootstrap

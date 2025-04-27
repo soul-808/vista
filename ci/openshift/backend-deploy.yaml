@@ -5,7 +5,7 @@ metadata:
   labels:
     app: vista-backend
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: vista-backend
@@ -16,27 +16,23 @@ spec:
     spec:
       containers:
       - name: vista-backend
-        image: ${DOCKER_REGISTRY}/vista-backend:${IMAGE_TAG}
+        image: docker.io/soul808/vista-backend:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
         - name: SPRING_PROFILES_ACTIVE
-          value: "prod"
+          value: "nodb"
+        - name: SPRING_AUTOCONFIGURE_EXCLUDE
+          value: "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration,org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration,org.springframework.boot.autoconfigure.sql.init.SqlInitializationAutoConfiguration,org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration"
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: "none"
         - name: SPRING_DATASOURCE_URL
-          valueFrom:
-            secretKeyRef:
-              name: vista-db-secret
-              key: url
-        - name: SPRING_DATASOURCE_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: vista-db-secret
-              key: username
-        - name: SPRING_DATASOURCE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: vista-db-secret
-              key: password
+          value: ""
+        - name: SERVER_SERVLET_CONTEXT_PATH
+          value: "/api"
+        - name: JAVA_OPTS
+          value: "-Xms512m -Xmx1024m -XX:+UseG1GC -Dspring.jpa.hibernate.ddl-auto=none -Dserver.servlet.context-path=/api -Dspring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration,org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration"
         resources:
           limits:
             cpu: "1000m"
@@ -45,14 +41,12 @@ spec:
             cpu: "500m"
             memory: "512Mi"
         readinessProbe:
-          httpGet:
-            path: /actuator/health
+          tcpSocket:
             port: 8080
           initialDelaySeconds: 30
           periodSeconds: 10
         livenessProbe:
-          httpGet:
-            path: /actuator/health
+          tcpSocket:
             port: 8080
           initialDelaySeconds: 60
           periodSeconds: 15
@@ -61,6 +55,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: vista-backend
+  labels:
+    app: vista-backend
 spec:
   selector:
     app: vista-backend
@@ -73,7 +69,10 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: vista-backend
+  labels:
+    app: vista-backend
 spec:
+  path: / 
   to:
     kind: Service
     name: vista-backend
