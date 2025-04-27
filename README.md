@@ -11,6 +11,7 @@ all powered by real code telemetry and AI.
 │
 ├── apps/                      # Application modules
 │   ├── frontend/             # Microfrontends (React)
+│   │   └── shell/           # Main Angular shell app
 │   └── backend/              # Spring Boot backend
 │
 ├── libs/                     # Shared libraries
@@ -51,36 +52,30 @@ all powered by real code telemetry and AI.
 
 ### Building
 - Backend: `cd apps/backend && ./mvnw spring-boot:run`
-<!-- ./mvnw clean package -->
 - Docker:
-`docker build -t vista-backend -f docker/backend/Dockerfile apps/backend`
-`docker run -p 8080:8080 vista-backend`
-- Docker background service:
-`docker run -d -p 8080:8080 vista-backend`
-<!-- # get the container ID -->
-`docker ps`    
-`docker stop <id>`
-
-- Frontend:
-<!-- yarn create nx-workspace@latest (maybe later) --> 
-yarn add -D @angular/cli
-cd apps/frontend
-npx @angular/cli new shell --directory=shell --routing=true --style=scss
-yarn ng generate component components/health-check
-
-
-
+  ```bash
+  # Build backend
+  docker build -t vista-backend apps/backend
+  
+  # Build frontend
+  docker build -t vista-shell apps/frontend/shell
+  
+  # Run with docker-compose
+  <!-- docker-compose -f ci/docker-compose.dev.yaml up -->
+  docker compose -f ci/docker-compose.dev.yaml down
+  docker compose -f ci/docker-compose.dev.yaml up --build
+  ```
 
 ### Testing
 
-- Frontend: `cd apps/frontend && npm test`
-- Backend: `cd apps/backend && ./gradlew test`
+- Frontend: `cd apps/frontend/shell && yarn test`
+- Backend: `cd apps/backend && ./mvnw test`
 
 ## Architecture
 
 The platform is built using a microservices architecture with the following components:
 
-- **Frontend**: React-based microfrontends
+- **Frontend**: Angular-based shell application
   - Shell application for routing and layout
   - Dashboard module for analytics
   - Compliance panel for document management

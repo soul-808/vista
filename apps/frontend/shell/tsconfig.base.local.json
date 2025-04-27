@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "types": [],
+    "baseUrl": "./",
+    "paths": {
+      "@vista/shared/*": ["../../libs/shared-utils/*"],
+      "@vista/models/*": ["../../libs/shared-models/*"],
+      "@vista/auth/*": ["../../libs/shared-auth/*"]
+    }
+  }
+} 

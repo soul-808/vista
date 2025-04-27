@@ -1,36 +1,37 @@
+# Updated to use root context so Docker can access yarn.lock and .yarn for workspace build
 version: '3.8'
 
 services:
   frontend:
     build:
-      context: ../../apps/frontend
-      dockerfile: ../../docker/frontend/Dockerfile
+      context: ..
+      dockerfile: apps/frontend/shell/Dockerfile
     ports:
-      - "3000:3000"
-    volumes:
-      - ../../apps/frontend:/app
-      - /app/node_modules
-    environment:
-      - NODE_ENV=development
-      - REACT_APP_API_URL=http://localhost:8080
+      - "4200:80"
     depends_on:
       - backend
+    environment:
+      - NODE_ENV=development
 
   backend:
     build:
-      context: ../../apps/backend
-      dockerfile: ../../docker/backend/Dockerfile
+      context: ..
+      dockerfile: apps/backend/Dockerfile
     ports:
       - "8080:8080"
-    volumes:
-      - ../../apps/backend:/app
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+      - JAVA_OPTS=-Xms512m -Xmx1024m -XX:+UseG1GC
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/vista
       - SPRING_DATASOURCE_USERNAME=vista
       - SPRING_DATASOURCE_PASSWORD=vista
     depends_on:
       - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
 
   db:
     image: postgres:13
@@ -42,6 +43,11 @@ services:
       - POSTGRES_PASSWORD=vista
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vista"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
