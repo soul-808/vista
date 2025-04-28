@@ -40,3 +40,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Ignore only the dev config for Angular local dev
+public/assets/config.json

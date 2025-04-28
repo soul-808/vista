@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: vista-backend
-        image: docker.io/soul808/vista-backend:latest-1745803844
+        image: docker.io/soul808/vista-backend:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

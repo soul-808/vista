@@ -1,8 +1,8 @@
 // apps/frontend/shell/src/app/components/health-check/health-check.component.ts
 
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-health-check',
@@ -15,10 +15,10 @@ export class HealthCheckComponent implements OnInit {
   status: string = 'Loading...';
   error: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
-    this.http.get<{ status: string }>('/api/health').subscribe({
+    this.apiService.getHealth().subscribe({
       next: (res) => {
         this.status = res.status;
       },

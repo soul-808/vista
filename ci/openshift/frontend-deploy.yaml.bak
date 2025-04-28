@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: vista-frontend
-        image: docker.io/soul808/vista-frontend:latest-1745803677
+        image: docker.io/soul808/vista-frontend:latest
         imagePullPolicy: Always
         env:
         - name: API_URL
