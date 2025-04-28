@@ -16,23 +16,15 @@ spec:
     spec:
       containers:
       - name: vista-backend
-        image: docker.io/soul808/vista-backend:latest
+        image: docker.io/soul808/vista-backend:latest-1745814634
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
-        - name: SPRING_PROFILES_ACTIVE
-          value: "nodb"
-        - name: SPRING_AUTOCONFIGURE_EXCLUDE
-          value: "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration,org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration,org.springframework.boot.autoconfigure.sql.init.SqlInitializationAutoConfiguration,org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration"
-        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-          value: "none"
-        - name: SPRING_DATASOURCE_URL
-          value: ""
         - name: SERVER_SERVLET_CONTEXT_PATH
           value: "/api"
         - name: JAVA_OPTS
-          value: "-Xms512m -Xmx1024m -XX:+UseG1GC -Dspring.jpa.hibernate.ddl-auto=none -Dserver.servlet.context-path=/api -Dspring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration,org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration"
+          value: "-Xms512m -Xmx1024m -XX:+UseG1GC -Dserver.servlet.context-path=/api"
         - name: SPRING_SECURITY_CORS_ALLOWED_ORIGINS
           value: "https://vista-frontend-brandonarka3-dev.apps.rm3.7wse.p1.openshiftapps.com,http://localhost:3000"
         - name: SPRING_SECURITY_CORS_ALLOWED_METHODS
@@ -41,6 +33,21 @@ spec:
           value: "Origin,X-Requested-With,Content-Type,Accept,Authorization"
         - name: SPRING_SECURITY_CORS_ALLOW_CREDENTIALS
           value: "true"
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            secretKeyRef:
+              name: vista-db-secret
+              key: url
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: vista-db-secret
+              key: username
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: vista-db-secret
+              key: password
         resources:
           limits:
             cpu: "1000m"

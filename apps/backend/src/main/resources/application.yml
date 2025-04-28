@@ -2,9 +2,9 @@ spring:
   application:
     name: vista-backend
   datasource:
-    url: jdbc:postgresql://localhost:5432/vista
-    username: vista
-    password: vista
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/vista}
+    username: ${SPRING_DATASOURCE_USERNAME:vista}
+    password: ${SPRING_DATASOURCE_PASSWORD:vista}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -28,8 +28,12 @@ logging:
   level:
     root: INFO
     com.vista: DEBUG
-    org.springframework.security: INFO
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
     org.hibernate.SQL: DEBUG
+    org.springframework.security.web.FilterChainProxy: DEBUG
+    org.springframework.security.web.authentication: DEBUG
+    org.springframework.security.web.access: DEBUG
 
 management:
   endpoints:

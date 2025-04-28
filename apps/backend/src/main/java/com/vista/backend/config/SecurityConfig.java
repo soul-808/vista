@@ -1,4 +1,4 @@
-package com.vista.backend;
+package com.vista.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +19,7 @@ public class SecurityConfig {
             .csrf().disable()
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/health").permitAll() // ✅ public access
+                .requestMatchers("/users", "/users/**").permitAll() // ✅ public access for users
                 .anyRequest().authenticated()              // 🔐 all others require login
             )
             .httpBasic(); // or .formLogin() if you prefer

@@ -59,8 +59,8 @@ echo "✅ Backend images pushed"
 echo "\n\n🔄 Updating deployment configuration with new image tag..."
 # Create a backup of the original file
 cp "$PROJECT_ROOT/ci/openshift/backend-deploy.yaml" "$PROJECT_ROOT/ci/openshift/backend-deploy.yaml.bak"
-# Update the image tag
-sed -i '' "s|image: docker.io/soul808/vista-backend:latest|image: docker.io/soul808/vista-backend:$IMAGE_TAG|" "$PROJECT_ROOT/ci/openshift/backend-deploy.yaml"
+# Update the image tag - handle any existing timestamp
+sed -i '' "s|image: docker.io/soul808/vista-backend:latest-[0-9]*|image: docker.io/soul808/vista-backend:$IMAGE_TAG|" "$PROJECT_ROOT/ci/openshift/backend-deploy.yaml"
 
 # Deploy to OpenShift
 echo "\n\n🚀 Deploying to OpenShift..."
