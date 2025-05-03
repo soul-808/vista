@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from '../config.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class ApiService {
     console.log('\n\nConfigService instance:', this.config);
   }
 
-  getHealth() {
+  getHealth(): Observable<{ status: string }> {
     try {
       const apiUrl = this.config.apiUrl;
       
@@ -33,5 +34,21 @@ export class ApiService {
       console.error('\n\nError in getHealth():', error);
       throw error;
     }
+  }
+
+  get<T>(endpoint: string): Observable<T> {
+    const apiUrl = this.config.apiUrl;
+    if (!apiUrl) {
+      throw new Error('API URL is undefined or null');
+    }
+    return this.http.get<T>(`${apiUrl}${endpoint}`);
+  }
+
+  post<T>(endpoint: string, data: unknown): Observable<T> {
+    const apiUrl = this.config.apiUrl;
+    if (!apiUrl) {
+      throw new Error('API URL is undefined or null');
+    }
+    return this.http.post<T>(`${apiUrl}${endpoint}`, data);
   }
 } 

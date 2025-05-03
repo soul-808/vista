@@ -12,12 +12,19 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "esModuleInterop": true,
+    "sourceMap": true,
+    "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
     "baseUrl": ".",
+    "lib": [
+      "ES2022",
+      "dom"
+    ],
+    "types": ["jest", "node"],
     "paths": {
       "@/*": ["src/*"],
       "@vista/models/*": ["../../../libs/shared-models/src/*"],

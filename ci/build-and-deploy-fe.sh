@@ -65,8 +65,8 @@ echo "✅ Frontend images pushed"
 echo "\n\n🔄 Updating deployment configuration with new image tag..."
 # Create a backup of the original file
 cp "$PROJECT_ROOT/ci/openshift/frontend-deploy.yaml" "$PROJECT_ROOT/ci/openshift/frontend-deploy.yaml.bak"
-# Update the image tag
-sed -i '' "s|image: docker.io/soul808/vista-frontend:latest|image: docker.io/soul808/vista-frontend:$IMAGE_TAG|" "$PROJECT_ROOT/ci/openshift/frontend-deploy.yaml"
+# Update the image tag - using a more robust pattern that matches the entire image line
+sed -i '' "s|image: docker.io/soul808/vista-frontend:[^[:space:]]*|image: docker.io/soul808/vista-frontend:$IMAGE_TAG|" "$PROJECT_ROOT/ci/openshift/frontend-deploy.yaml"
 
 # Deploy to OpenShift
 echo "\n\n🚀 Deploying to OpenShift..."

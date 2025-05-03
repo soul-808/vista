@@ -70,6 +70,13 @@ all powered by real code telemetry and AI.
 - Frontend: `cd apps/frontend/shell && yarn test`
 - Backend: `cd apps/backend && ./mvnw test`
 
+### Deploying
+1. Start Docker Desktop
+2. Run: `oc apply -f ci/openshift/postgres-secret.yaml`
+2. Run: `./ci./ci/build-and-deploy-be.sh`
+3. Run: `./ci/build-and-deploy-fe.sh`
+
+
 ## Architecture
 
 The platform is built using a microservices architecture with the following components:
