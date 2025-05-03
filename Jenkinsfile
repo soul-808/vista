@@ -11,6 +11,9 @@ pipeline {
     GIT_SHORT_SHA          = "${env.GIT_COMMIT?.substring(0,8)}"
     IMAGE_BACKEND          = "${DOCKER_REGISTRY}/soul808/vista-backend:${GIT_SHORT_SHA}"
     IMAGE_FRONTEND         = "${DOCKER_REGISTRY}/soul808/vista-frontend:${GIT_SHORT_SHA}"
+    // Image retention settings
+    IMAGE_RETENTION_COUNT  = '3'                    // Keep last N images
+    IMAGE_RETENTION_DAYS   = '7'                    // Keep images newer than N days
   }
 
   stages {
@@ -86,6 +89,46 @@ pipeline {
       }
     }
 
+    stage('Cleanup Docker Images') {
+      steps {
+        script {
+          def repos = [
+            "${env.DOCKER_REGISTRY}/soul808/vista-backend",
+            "${env.DOCKER_REGISTRY}/soul808/vista-frontend"
+          ]
+
+          repos.each { repo ->
+            // Strategy 1: Keep last N images by tag
+            sh """
+              echo "🧹 Cleaning up old images for ${repo} (keeping last ${IMAGE_RETENTION_COUNT})..."
+              old_tags=\$(docker images "${repo}" --format "{{.Tag}} {{.CreatedAt}}" \
+                | grep -v '^latest\$' \
+                | sort -r -k2 \
+                | awk '{print \$1}' \
+                | tail -n +${IMAGE_RETENTION_COUNT})
+              
+              if [ -n "\$old_tags" ]; then
+                echo "🗑️ Removing old tags:"
+                echo "\$old_tags"
+                echo "\$old_tags" | xargs -r -n1 docker rmi "${repo}:{}"
+              else
+                echo "✓ No old tags to remove for ${repo}"
+              fi
+            """
+
+            // Strategy 2: Remove images older than N days
+            sh """
+              echo "🧹 Removing images older than ${IMAGE_RETENTION_DAYS} days..."
+              docker image prune -f --filter "until=${IMAGE_RETENTION_DAYS}h" --filter "label=app=vista"
+            """
+          }
+
+          // Final cleanup of dangling images
+          sh 'docker image prune -f --filter "dangling=true"'
+        }
+      }
+    }
+
     stage('Deploy to OpenShift') {
       steps {
         withCredentials([string(
@@ -105,7 +148,14 @@ pipeline {
 
   post {
     always {
+      // Clean workspace
       cleanWs()
+      
+      // Final system cleanup
+      sh '''
+        echo "🧹 Performing final Docker system cleanup..."
+        docker system prune -f --volumes --filter "until=${IMAGE_RETENTION_DAYS}h"
+      '''
     }
   }
 }

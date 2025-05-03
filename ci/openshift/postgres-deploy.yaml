@@ -1,19 +1,9 @@
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
----
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: postgres
 spec:
+  serviceName: postgres
   replicas: 1
   selector:
     matchLabels:
@@ -23,6 +13,18 @@ spec:
       labels:
         app: postgres
     spec:
+      serviceAccountName: postgres-sa
+      securityContext:
+        runAsUser: 1005810000
+        runAsGroup: 1005810000
+        fsGroup: 1005810000
+      initContainers:
+        - name: init-data-dir
+          image: busybox
+          command: ['sh', '-c', 'mkdir -p /data/pgdata']
+          volumeMounts:
+            - name: data
+              mountPath: /data
       containers:
         - name: postgres
           image: postgres:13
@@ -39,26 +41,41 @@ spec:
                   name: vista-db-secret
                   key: password
             - name: PGDATA
-              value: /var/lib/postgresql/data/pgdata
+              value: /data/pgdata
           volumeMounts:
-            - name: postgres-storage
-              mountPath: /var/lib/postgresql/data
-          env:
-            - name: POSTGRES_DB
-              value: vista
-            - name: POSTGRES_USER
-              value: vista_user
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: vista-db-secret
-                  key: password
-            - name: PGDATA
-              value: /var/lib/postgresql/data/pgdata
+            - name: data
+              mountPath: /data
+          resources:
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - vista_user
+                - -d
+                - vista
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - vista_user
+                - -d
+                - vista
+            initialDelaySeconds: 60
+            periodSeconds: 15
       volumes:
-        - name: postgres-storage
+        - name: data
           persistentVolumeClaim:
-            claimName: postgres-pvc
+            claimName: postgres-data
 ---
 apiVersion: v1
 kind: Service
@@ -74,3 +91,5 @@ spec:
 
 # oc apply -f ci/openshift/postgres-secret.yaml
 # oc apply -f ci/openshift/postgres-deploy.yaml
+# oc apply -f ci/openshift/postgres-sa.yaml
+# oc apply -f ci/openshift/postgres-pvc.yaml
