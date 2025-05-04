@@ -1,38 +1,7 @@
 // Path: Jenkinsfile
 
 pipeline {
-  agent {
-    kubernetes {
-      yaml '''
-        apiVersion: v1
-        kind: Pod
-        spec:
-          containers:
-          - name: maven
-            image: maven:3.9.6-eclipse-temurin-17
-            command:
-            - cat
-            tty: true
-          - name: node
-            image: node:18
-            command:
-            - cat
-            tty: true
-          - name: docker
-            image: docker:latest
-            command:
-            - cat
-            tty: true
-            volumeMounts:
-            - mountPath: /var/run/docker.sock
-              name: docker-sock
-          volumes:
-          - name: docker-sock
-            hostPath:
-              path: /var/run/docker.sock
-      '''
-    }
-  }
+  agent any
 
   environment {
     DOCKER_IMAGE = 'soul808/vista'
@@ -50,21 +19,34 @@ pipeline {
 
     stage('Build Backend') {
       steps {
-        container('maven') {
-          dir('apps/backend') {
-            sh 'mvn clean package -DskipTests'
-          }
+        dir('apps/backend') {
+          sh '''
+            # Install Maven if not present
+            if ! command -v mvn &> /dev/null; then
+              echo "Installing Maven..."
+              curl -O https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+              tar xzf apache-maven-3.9.6-bin.tar.gz
+              export PATH=$PWD/apache-maven-3.9.6/bin:$PATH
+            fi
+            mvn clean package -DskipTests
+          '''
         }
       }
     }
 
     stage('Build Frontend') {
       steps {
-        container('node') {
-          dir('apps/frontend/shell') {
-            sh 'yarn install'
-            sh 'yarn build'
-          }
+        dir('apps/frontend/shell') {
+          sh '''
+            # Install Node if not present
+            if ! command -v node &> /dev/null; then
+              echo "Installing Node..."
+              curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+              apt-get install -y nodejs
+            fi
+            yarn install
+            yarn build
+          '''
         }
       }
     }
@@ -73,37 +55,32 @@ pipeline {
       steps {
         withSonarQubeEnv('SonarCloud') {
           withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-            container('maven') {
-              sh '''
-                # Run backend analysis
-                cd apps/backend
-                mvn clean verify sonar:sonar \
-                  -Dsonar.host.url=${SONAR_HOST_URL} \
-                  -Dsonar.login=${SONAR_TOKEN} \
-                  -Dsonar.organization=soul808 \
-                  -Dsonar.projectKey=soul808_vista-backend \
-                  -Dsonar.java.binaries=target/classes \
-                  -Dsonar.java.source=17 \
-                  -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
-              '''
-            }
-            container('node') {
-              sh '''
-                # Run frontend analysis
-                cd apps/frontend/shell
-                yarn install
-                yarn test --coverage
-                sonar-scanner \
-                  -Dsonar.host.url=${SONAR_HOST_URL} \
-                  -Dsonar.login=${SONAR_TOKEN} \
-                  -Dsonar.organization=soul808 \
-                  -Dsonar.projectKey=soul808_vista-frontend \
-                  -Dsonar.sources=src \
-                  -Dsonar.tests=src \
-                  -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-                  -Dsonar.typescript.tsconfigPath=tsconfig.json
-              '''
-            }
+            sh '''
+              # Run backend analysis
+              cd apps/backend
+              mvn clean verify sonar:sonar \
+                -Dsonar.host.url=${SONAR_HOST_URL} \
+                -Dsonar.login=${SONAR_TOKEN} \
+                -Dsonar.organization=soul808 \
+                -Dsonar.projectKey=soul808_vista-backend \
+                -Dsonar.java.binaries=target/classes \
+                -Dsonar.java.source=17 \
+                -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+              
+              # Run frontend analysis
+              cd ../../apps/frontend/shell
+              yarn install
+              yarn test --coverage
+              sonar-scanner \
+                -Dsonar.host.url=${SONAR_HOST_URL} \
+                -Dsonar.login=${SONAR_TOKEN} \
+                -Dsonar.organization=soul808 \
+                -Dsonar.projectKey=soul808_vista-frontend \
+                -Dsonar.sources=src \
+                -Dsonar.tests=src \
+                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                -Dsonar.typescript.tsconfigPath=tsconfig.json
+            '''
           }
         }
       }
@@ -119,21 +96,19 @@ pipeline {
 
     stage('Build and Push Docker Images') {
       steps {
-        container('docker') {
-          script {
-            // Build and push backend image
-            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-creds') {
-              def backendImage = docker.build("${DOCKER_IMAGE}-backend:${DOCKER_TAG}", 
-                "--platform linux/amd64 -f apps/backend/Dockerfile .")
-              backendImage.push()
-            }
-            
-            // Build and push frontend image
-            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-creds') {
-              def frontendImage = docker.build("${DOCKER_IMAGE}-frontend:${DOCKER_TAG}", 
-                "--platform linux/amd64 -f apps/frontend/shell/Dockerfile .")
-              frontendImage.push()
-            }
+        script {
+          // Build and push backend image
+          docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-creds') {
+            def backendImage = docker.build("${DOCKER_IMAGE}-backend:${DOCKER_TAG}", 
+              "--platform linux/amd64 -f apps/backend/Dockerfile .")
+            backendImage.push()
+          }
+          
+          // Build and push frontend image
+          docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-creds') {
+            def frontendImage = docker.build("${DOCKER_IMAGE}-frontend:${DOCKER_TAG}", 
+              "--platform linux/amd64 -f apps/frontend/shell/Dockerfile .")
+            frontendImage.push()
           }
         }
       }
