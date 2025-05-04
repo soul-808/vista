@@ -14,14 +14,32 @@ pipeline {
     // Image retention settings
     IMAGE_RETENTION_COUNT  = '3'                    // Keep last N images
     IMAGE_RETENTION_DAYS   = '7'                    // Keep images newer than N days
+    // SonarCloud settings
+    SONAR_HOST_URL         = 'https://sonarcloud.io'
+    SONAR_ORGANIZATION     = 'soul808'
+    SONAR_PROJECT_KEY      = 'soul808_vista'
   }
 
   stages {
     stage('Checkout') {
-      steps { checkout scm }
+      steps {
+        checkout([
+          $class: 'GitSCM',
+          userRemoteConfigs: [[
+            url: 'https://github.com/your-org/your-repo.git',
+            credentialsId: 'github-pat-2'
+          ]]
+        ])
+      }
     }
 
     stage('Build & Test Backend') {
+      agent {
+        docker {
+          image 'maven:3.9.6-eclipse-temurin-17'
+          args  '-v $HOME/.m2:/root/.m2'
+        }
+      }
       steps {
         dir('apps/backend') {
           // run tests, generate Jacoco coverage report
@@ -34,6 +52,12 @@ pipeline {
     }
 
     stage('Build & Test Frontend') {
+      agent {
+        docker {
+          image 'node:18'
+          args  '-u root'
+        }
+      }
       steps {
         dir('apps/frontend/shell') {
           // run Jest with coverage
@@ -49,18 +73,44 @@ pipeline {
     stage('SonarQube Analysis') {
       when { expression { return SONAR_ENABLED } }
       steps {
-        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-          sh """
-            sonar-scanner \
-              -Dsonar.projectKey=vista \
-              -Dsonar.sources=. \
-              -Dsonar.tests=apps/backend/src/test,apps/frontend/shell/src \
-              -Dsonar.java.binaries=apps/backend/target/classes \
-              -Dsonar.coverage.jacoco.xmlReportPaths=apps/backend/target/site/jacoco/jacoco.xml \
-              -Dsonar.javascript.lcov.reportPaths=apps/frontend/shell/coverage/lcov.info \
-              -Dsonar.host.url=https://sonar.mycompany.com \
-              -Dsonar.login=$SONAR_TOKEN
-          """
+        withSonarQubeEnv('SonarCloud') {
+          withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+            sh """
+              # Run backend analysis
+              cd apps/backend
+              mvn clean verify sonar:sonar \
+                -Dsonar.host.url=${SONAR_HOST_URL} \
+                -Dsonar.login=${SONAR_TOKEN} \
+                -Dsonar.organization=${SONAR_ORGANIZATION} \
+                -Dsonar.projectKey=${SONAR_PROJECT_KEY}-backend \
+                -Dsonar.java.binaries=target/classes \
+                -Dsonar.java.source=17 \
+                -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+              
+              # Run frontend analysis
+              cd ../../apps/frontend/shell
+              yarn install
+              yarn test --coverage
+              sonar-scanner \
+                -Dsonar.host.url=${SONAR_HOST_URL} \
+                -Dsonar.login=${SONAR_TOKEN} \
+                -Dsonar.organization=${SONAR_ORGANIZATION} \
+                -Dsonar.projectKey=${SONAR_PROJECT_KEY}-frontend \
+                -Dsonar.sources=src \
+                -Dsonar.tests=src \
+                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                -Dsonar.typescript.tsconfigPath=tsconfig.json
+            """
+          }
+        }
+      }
+    }
+
+    stage('Quality Gate') {
+      when { expression { return SONAR_ENABLED } }
+      steps {
+        timeout(time: 5, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
         }
       }
     }
