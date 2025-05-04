@@ -51,15 +51,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        checkout([
-          $class: 'GitSCM',
-          branches: [[name: '*/main']],
-          extensions: [],
-          userRemoteConfigs: [[
-            credentialsId: 'github-token',
-            url: 'https://github.com/soul808/vista.git'
-          ]]
-        ])
+        checkout scm
       }
     }
 
