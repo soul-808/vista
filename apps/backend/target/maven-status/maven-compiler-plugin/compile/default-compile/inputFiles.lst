@@ -9,4 +9,5 @@
 /Users/soul_808/vs_workspace/vista/apps/backend/src/main/java/com/vista/backend/exception/GlobalExceptionHandler.java
 /Users/soul_808/vs_workspace/vista/apps/backend/src/main/java/com/vista/backend/repository/UserRepository.java
 /Users/soul_808/vs_workspace/vista/apps/backend/src/main/java/com/vista/backend/service/UserService.java
+/Users/soul_808/vs_workspace/vista/apps/backend/src/main/java/com/vista/backend/util/JwtAuthFilter.java
 /Users/soul_808/vs_workspace/vista/apps/backend/src/main/java/com/vista/backend/util/JwtUtils.java
