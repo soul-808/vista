@@ -34,38 +34,34 @@ pipeline {
     }
 
     stage('Build & Test Backend') {
-      agent {
-        docker {
-          image 'maven:3.9.6-eclipse-temurin-17'
-          args  '-v $HOME/.m2:/root/.m2'
-        }
-      }
       steps {
-        dir('apps/backend') {
-          // run tests, generate Jacoco coverage report
-          sh 'mvn clean test jacoco:report -B'
-          // archive results so Sonar and Jenkins can read them
-          junit '**/target/surefire-reports/*.xml'
-          publishCoverage adapters: [jacocoAdapter('**/target/jacoco.exec')]
+        script {
+          docker.image('maven:3.9.6-eclipse-temurin-17').inside('-v $HOME/.m2:/root/.m2') {
+            dir('apps/backend') {
+              // run tests, generate Jacoco coverage report
+              sh 'mvn clean test jacoco:report -B'
+              // archive results so Sonar and Jenkins can read them
+              junit '**/target/surefire-reports/*.xml'
+              publishCoverage adapters: [jacocoAdapter('**/target/jacoco.exec')]
+            }
+          }
         }
       }
     }
 
     stage('Build & Test Frontend') {
-      agent {
-        docker {
-          image 'node:18'
-          args  '-u root'
-        }
-      }
       steps {
-        dir('apps/frontend/shell') {
-          // run Jest with coverage
-          sh 'yarn install --frozen-lockfile'
-          sh 'yarn test --ci --coverage'
-          // archive results
-          junit '**/coverage/junit-report.xml'
-          publishCoverage adapters: [istanbulAdapter('coverage/coverage-final.json')]
+        script {
+          docker.image('node:18').inside('-u root -v $HOME/.npm:/home/jenkins/.npm') {
+            dir('apps/frontend/shell') {
+              // run Jest with coverage
+              sh 'yarn install --frozen-lockfile'
+              sh 'yarn test --ci --coverage'
+              // archive results
+              junit '**/coverage/junit-report.xml'
+              publishCoverage adapters: [istanbulAdapter('coverage/coverage-final.json')]
+            }
+          }
         }
       }
     }
