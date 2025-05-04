@@ -1,12 +1,19 @@
 // Path: Jenkinsfile
 
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'maven:3.9.6-eclipse-temurin-17'
+      args '-v $HOME/.m2:/root/.m2'
+    }
+  }
 
   environment {
-    DOCKER_IMAGE = 'soul808/vista'
+    BACKEND_IMAGE = 'soul808/vista-backend'
+    FRONTEND_IMAGE = 'soul808/vista-frontend'
     DOCKER_TAG = "${env.BUILD_NUMBER}"
     OPENSHIFT_PROJECT = 'brandonarka3-dev'
+    OPENSHIFT_SERVER = 'https://api.silver.devops.gov.bc.ca:6443'
     SONAR_HOST_URL = 'https://sonarcloud.io'
   }
 
@@ -20,47 +27,21 @@ pipeline {
     stage('Build Backend') {
       steps {
         dir('apps/backend') {
-          sh '''
-            # Install Java 17
-            echo "Installing Java 17..."
-            apt-get update
-            apt-get install -y wget apt-transport-https
-            wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add -
-            echo "deb https://packages.adoptium.net/artifactory/deb focal main" | tee /etc/apt/sources.list.d/adoptium.list
-            apt-get update
-            apt-get install -y temurin-17-jdk
-            
-            # Install Maven if not present
-            if ! command -v mvn &> /dev/null; then
-              echo "Installing Maven..."
-              curl -O https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
-              tar xzf apache-maven-3.9.6-bin.tar.gz
-              export PATH=$PWD/apache-maven-3.9.6/bin:$PATH
-            fi
-            
-            # Set JAVA_HOME
-            export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64
-            export PATH=$JAVA_HOME/bin:$PATH
-            
-            mvn clean package -DskipTests
-          '''
+          sh 'mvn clean package -DskipTests'
         }
       }
     }
 
     stage('Build Frontend') {
+      agent {
+        docker {
+          image 'node:18'
+        }
+      }
       steps {
         dir('apps/frontend/shell') {
-          sh '''
-            # Install Node if not present
-            if ! command -v node &> /dev/null; then
-              echo "Installing Node..."
-              curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-              apt-get install -y nodejs
-            fi
-            yarn install
-            yarn build
-          '''
+          sh 'yarn install'
+          sh 'yarn build'
         }
       }
     }
@@ -109,18 +90,24 @@ pipeline {
     }
 
     stage('Build and Push Docker Images') {
+      agent {
+        docker {
+          image 'docker:latest'
+          args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+      }
       steps {
         script {
           // Build and push backend image
           docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-creds') {
-            def backendImage = docker.build("${DOCKER_IMAGE}-backend:${DOCKER_TAG}", 
+            def backendImage = docker.build("${BACKEND_IMAGE}:${DOCKER_TAG}", 
               "--platform linux/amd64 -f apps/backend/Dockerfile .")
             backendImage.push()
           }
           
           // Build and push frontend image
           docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-creds') {
-            def frontendImage = docker.build("${DOCKER_IMAGE}-frontend:${DOCKER_TAG}", 
+            def frontendImage = docker.build("${FRONTEND_IMAGE}:${DOCKER_TAG}", 
               "--platform linux/amd64 -f apps/frontend/shell/Dockerfile .")
             frontendImage.push()
           }
@@ -133,14 +120,14 @@ pipeline {
         script {
           withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
             sh '''
-              oc login --token=${OC_TOKEN} --server=https://api.silver.devops.gov.bc.ca:6443
+              oc login --token=${OC_TOKEN} --server=${OPENSHIFT_SERVER}
               oc project ${OPENSHIFT_PROJECT}
               
               # Update backend deployment
-              oc set image deployment/vista-backend vista-backend=soul808/vista-backend:${DOCKER_TAG}
+              oc set image deployment/vista-backend vista-backend=${BACKEND_IMAGE}:${DOCKER_TAG}
               
               # Update frontend deployment
-              oc set image deployment/vista-frontend vista-frontend=soul808/vista-frontend:${DOCKER_TAG}
+              oc set image deployment/vista-frontend vista-frontend=${FRONTEND_IMAGE}:${DOCKER_TAG}
             '''
           }
         }
