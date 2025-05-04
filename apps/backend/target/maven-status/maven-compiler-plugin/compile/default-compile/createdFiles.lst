@@ -1,9 +1,9 @@
 com/vista/backend/config/SecurityConfig.class
 com/vista/backend/service/UserService.class
 com/vista/backend/dto/UserDto.class
+com/vista/backend/entity/User.class
+com/vista/backend/repository/UserRepository.class
 com/vista/backend/controller/UserController.class
 com/vista/backend/VistaBackendApplication.class
-com/vista/backend/entity/User.class
 com/vista/backend/exception/GlobalExceptionHandler.class
 com/vista/backend/controller/HealthController.class
-com/vista/backend/repository/UserRepository.class

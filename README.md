@@ -66,6 +66,11 @@ all powered by real code telemetry and AI.
   docker compose -f ci/docker-compose.dev.yaml down
   docker compose -f ci/docker-compose.dev.yaml up --build
   ```
+### Local Dev
+// forward the db to a local port
+DB: `oc port-forward svc/postgres 5432:5432`
+Run Backend: `mvn spring-boot:run`
+Run Frontend: `yarn start`
 
 ### Testing
 

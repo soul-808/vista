@@ -2,7 +2,7 @@ spring:
   application:
     name: vista-backend
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/vista}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://127.0.0.1:5432/vista}
     username: ${SPRING_DATASOURCE_USERNAME:vista_user}
     password: ${SPRING_DATASOURCE_PASSWORD:password}
     driver-class-name: org.postgresql.Driver
