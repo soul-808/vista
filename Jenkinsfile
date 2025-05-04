@@ -45,7 +45,10 @@ pipeline {
                 -Dsonar.host.url=${SONAR_HOST_URL} \
                 -Dsonar.login=${SONAR_TOKEN} \
                 -Dsonar.organization=soul808 \
-                -Dsonar.projectKey=soul808_vista-backend
+                -Dsonar.projectKey=soul808_vista-backend \
+                -Dsonar.java.binaries=target/classes \
+                -Dsonar.java.source=17 \
+                -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
               
               # Run frontend analysis
               cd ../../apps/frontend/shell
@@ -55,9 +58,21 @@ pipeline {
                 -Dsonar.host.url=${SONAR_HOST_URL} \
                 -Dsonar.login=${SONAR_TOKEN} \
                 -Dsonar.organization=soul808 \
-                -Dsonar.projectKey=soul808_vista-frontend
+                -Dsonar.projectKey=soul808_vista-frontend \
+                -Dsonar.sources=src \
+                -Dsonar.tests=src \
+                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                -Dsonar.typescript.tsconfigPath=tsconfig.json
             '''
           }
+        }
+      }
+    }
+
+    stage('Quality Gate') {
+      steps {
+        timeout(time: 5, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
         }
       }
     }

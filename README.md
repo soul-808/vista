@@ -128,6 +128,8 @@ echo 'export PATH="/opt/homebrew/opt/postgresql@13/bin:$PATH"' >> ~/.zshrc && so
 ### CI/CD
 Jenkins:
 - oc apply -f https://raw.githubusercontent.com/openshift/jenkins-operator/master/deploy/jenkins-operator.yaml
+- POST https://jenkins-brandonarka3-dev.apps.rm3.7wse.p1.openshiftapps.com/github-webhook/ (Content-Type: application/json)
+
 
 
 
