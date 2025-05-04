@@ -21,6 +21,15 @@ pipeline {
       steps {
         dir('apps/backend') {
           sh '''
+            # Install Java 17
+            echo "Installing Java 17..."
+            apt-get update
+            apt-get install -y wget apt-transport-https
+            wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add -
+            echo "deb https://packages.adoptium.net/artifactory/deb focal main" | tee /etc/apt/sources.list.d/adoptium.list
+            apt-get update
+            apt-get install -y temurin-17-jdk
+            
             # Install Maven if not present
             if ! command -v mvn &> /dev/null; then
               echo "Installing Maven..."
@@ -28,6 +37,11 @@ pipeline {
               tar xzf apache-maven-3.9.6-bin.tar.gz
               export PATH=$PWD/apache-maven-3.9.6/bin:$PATH
             fi
+            
+            # Set JAVA_HOME
+            export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64
+            export PATH=$JAVA_HOME/bin:$PATH
+            
             mvn clean package -DskipTests
           '''
         }
