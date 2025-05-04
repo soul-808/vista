@@ -35,6 +35,8 @@ all powered by real code telemetry and AI.
   - mvn -N io.takari:maven:wrapper (if the ./mvnw command doesn't work)
 - Docker: https://www.docker.com/
 - OpenShift CLI (for deployment)
+- brew install postgresql@13
+  - echo 'export PATH="/opt/homebrew/opt/postgresql@13/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc
 
 ### Local Development
 
@@ -75,6 +77,58 @@ all powered by real code telemetry and AI.
 2. Run: `oc apply -f ci/openshift/postgres-secret.yaml`
 2. Run: `./ci./ci/build-and-deploy-be.sh`
 3. Run: `./ci/build-and-deploy-fe.sh`
+
+> 💡 **Tip**: For CI/CD, install Jenkins via OperatorHub and apply `ci/openshift/jenkins-cr.yaml`. See `Jenkinsfile` for pipeline config.
+
+> Login url with oAuth enabled
+`https://jenkins-brandonarka3-dev.apps.rm3.7wse.p1.openshiftapps.com/` 
+
+### Database Management
+
+#### Backup
+The project includes scripts to manage PostgreSQL database backups:
+
+```bash
+# Create a backup
+./ci/backup-db.sh
+
+# List existing backups
+./ci/backup-db.sh --list
+```
+
+The backup script will:
+- Create compressed backups in the `./backups` directory
+- Name files with timestamps (e.g., `vista_db_20250503_133618.sql.gz`)
+- Automatically maintain the last 7 backups
+- Handle port forwarding to the OpenShift PostgreSQL pod
+
+#### Restore
+To restore from a backup:
+
+```bash
+# List available backups
+./ci/restore-db.sh --list
+
+# Restore from a specific backup
+./ci/restore-db.sh ./backups/vista_db_YYYYMMDD_HHMMSS.sql.gz
+```
+
+The restore script will:
+- Validate the backup file exists
+- Set up port forwarding to the database
+- Drop existing connections
+- Recreate the database
+- Restore the data from the backup
+
+Note: Ensure you have the PostgreSQL client tools installed:
+```bash
+brew install postgresql@13
+echo 'export PATH="/opt/homebrew/opt/postgresql@13/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc
+```
+### CI/CD
+Jenkins:
+- oc apply -f https://raw.githubusercontent.com/openshift/jenkins-operator/master/deploy/jenkins-operator.yaml
+
 
 
 ## Architecture

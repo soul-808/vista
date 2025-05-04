@@ -63,3 +63,6 @@ coverage/
 .idea/
 .vscode/
 .DS_Store
+
+# Local Files
+backups/
