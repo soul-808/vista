@@ -99,7 +99,7 @@ export const RiskCharts: React.FC<RiskChartsProps> = ({
                     `${name}: ${(percent * 100).toFixed(0)}%`
                   }
                 >
-                  {complianceTypeData.map((entry, index) => (
+                  {complianceTypeData.map((_, index) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={

@@ -37,4 +37,5 @@ export const routes: Routes = [
     component: AuthLayoutComponent,
     children: [{ path: 'login', component: LoginComponent }],
   },
+  { path: '**', redirectTo: 'home' },
 ];

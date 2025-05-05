@@ -1,7 +1,7 @@
 import React from "react";
 import * as ReactDOMClient from "react-dom/client";
 import reactToWebComponent from "react-to-webcomponent";
-import ComplianceDashboard from "./ComplianceDashboard";
+import App from "../App";
 import tailwindCss from "../index.css?inline";
 
 interface RootedElement extends Element {
@@ -35,13 +35,20 @@ const compatReactDOM = {
   },
 };
 
-const ComplianceDashboardElement = reactToWebComponent(
-  ComplianceDashboard,
+// Using standalone flag instead of wrapping with router
+const AppWithRouting = () => <App standalone={true} />;
+
+// Convert the React component to a Web Component
+const ComplianceMFE = reactToWebComponent(
+  AppWithRouting,
   React,
   compatReactDOM,
-  { shadow: "open" }
+  {
+    shadow: "open",
+  }
 );
 
-if (!customElements.get("compliance-mfe")) {
-  customElements.define("compliance-mfe", ComplianceDashboardElement);
-}
+// Register the web component
+customElements.define("compliance-mfe", ComplianceMFE);
+
+export default ComplianceMFE;

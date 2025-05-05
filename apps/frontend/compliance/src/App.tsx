@@ -1,19 +1,40 @@
-import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Routes, Route, MemoryRouter } from "react-router-dom";
 import ComplianceDashboard from "./components/ComplianceDashboard";
 
+// Create a singleton QueryClient instance
 const queryClient = new QueryClient();
 
-function App() {
+interface AppProps {
+  initialPath?: string;
+  standalone?: boolean;
+}
+
+function App({ initialPath = "/", standalone = false }: AppProps) {
+  console.log(
+    "React App mounted with initial path:",
+    initialPath,
+    "standalone:",
+    standalone
+  );
+
+  // Content to render with or without our own router
+  const content = (
+    <Routes>
+      <Route index element={<ComplianceDashboard />} />
+      {/* Add child routes here. These will be relative to the parent route in the shell */}
+      {/* Example: <Route path="details/:id" element={<ComplianceDetails />} /> */}
+    </Routes>
+  );
+
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<ComplianceDashboard />} />
-          {/* Add more routes here as needed */}
-        </Routes>
-      </Router>
+      {standalone ? (
+        <MemoryRouter initialEntries={[initialPath]}>{content}</MemoryRouter>
+      ) : (
+        // When used inside the shell, don't add our own router
+        content
+      )}
     </QueryClientProvider>
   );
 }

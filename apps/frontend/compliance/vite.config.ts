@@ -11,11 +11,33 @@ export default defineConfig({
       name: "compliance",
       filename: "remoteEntry.js",
       exposes: {
+        "./App": {
+          import: "./src/App.tsx",
+          name: "App",
+        },
         "./ComplianceDashboard":
           "./src/components/mountComplianceDashboard.tsx",
         "./ComplianceWC": "./src/components/ComplianceDashboardWC.tsx",
       },
-      shared: ["react", "react-dom"],
+      // Use 'as any' to bypass TypeScript's type checking which doesn't match the actual API
+      shared: {
+        react: {
+          singleton: true,
+          version: "19.0.0",
+          requiredVersion: "19.0.0",
+        },
+        "react-dom": {
+          singleton: true,
+          version: "19.0.0",
+          requiredVersion: "19.0.0",
+        },
+        "@tanstack/react-query": {
+          singleton: true,
+          version: "5.75.2",
+          requiredVersion: "5.75.2",
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any,
     }),
   ],
   server: {
