@@ -66,3 +66,4 @@ coverage/
 
 # Local Files
 backups/
+apps/backend/.env

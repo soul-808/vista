@@ -39,30 +39,33 @@ public class ComplianceDocument {
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "text")
     private String filename;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "uploaded_by_user_id", nullable = false)
     private User uploadedBy;
 
-    @Column(name = "risk_score")
+    @Column(name = "risk_score", columnDefinition = "text")
     private String riskScore;
 
-    @Column(name = "compliance_type")
+    @Column(name = "compliance_type", columnDefinition = "text")
     private String complianceType;
 
-    @Column(name = "source_system")
+    @Column(name = "source_system", columnDefinition = "text")
     private String sourceSystem;
 
+    @Column(columnDefinition = "text")
     private String jurisdiction;
 
     @Convert(converter = StringListArrayConverter.class)
     @Column(columnDefinition = "text[]", name = "tags")
+    @Builder.Default
     private List<String> tags = new ArrayList<>();
 
     @Column(name = "flagged_clauses", columnDefinition = "jsonb")
     @JdbcTypeCode(SqlTypes.JSON)
+    @Builder.Default
     private List<String> flaggedClauses = new ArrayList<>();
 
     @Lob
@@ -77,6 +80,7 @@ public class ComplianceDocument {
     @JsonIgnore
     private byte[] backupDoc;
 
+    @Column(columnDefinition = "text")
     private String notes;
 
     @Column(name = "created_at")

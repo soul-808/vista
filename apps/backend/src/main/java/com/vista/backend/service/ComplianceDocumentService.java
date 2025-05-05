@@ -34,7 +34,7 @@ public class ComplianceDocumentService {
     }
 
     public List<ComplianceDocumentDTO> getAllDocuments() {
-        return complianceDocumentRepository.findAll().stream()
+        return complianceDocumentRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -45,13 +45,13 @@ public class ComplianceDocumentService {
     }
 
     public List<ComplianceDocumentDTO> getDocumentsByRiskScore(String riskScore) {
-        return complianceDocumentRepository.findByRiskScore(riskScore).stream()
+        return complianceDocumentRepository.findByRiskScoreOrderByCreatedAtDesc(riskScore).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<ComplianceDocumentDTO> getDocumentsByComplianceType(String complianceType) {
-        return complianceDocumentRepository.findByComplianceType(complianceType).stream()
+        return complianceDocumentRepository.findByComplianceTypeOrderByCreatedAtDesc(complianceType).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }

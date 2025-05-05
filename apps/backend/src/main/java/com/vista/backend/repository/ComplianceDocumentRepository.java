@@ -13,20 +13,30 @@ import com.vista.backend.entity.ComplianceDocument;
 @Repository
 public interface ComplianceDocumentRepository extends JpaRepository<ComplianceDocument, UUID> {
 
-    List<ComplianceDocument> findByRiskScore(String riskScore);
+    List<ComplianceDocument> findByRiskScoreOrderByCreatedAtDesc(String riskScore);
     
-    List<ComplianceDocument> findByComplianceType(String complianceType);
+    List<ComplianceDocument> findByComplianceTypeOrderByCreatedAtDesc(String complianceType);
     
-    List<ComplianceDocument> findByJurisdiction(String jurisdiction);
+    List<ComplianceDocument> findByJurisdictionOrderByCreatedAtDesc(String jurisdiction);
     
-    @Query(value = "SELECT * FROM compliance_docs WHERE :tag = ANY(tags)", nativeQuery = true)
+    @Query(value = "SELECT * FROM compliance_docs WHERE :tag = ANY(tags) ORDER BY created_at DESC", nativeQuery = true)
     List<ComplianceDocument> findByTag(@Param("tag") String tag);
     
-    List<ComplianceDocument> findBySourceSystem(String sourceSystem);
+    List<ComplianceDocument> findBySourceSystemOrderByCreatedAtDesc(String sourceSystem);
     
     @Query("SELECT c FROM ComplianceDocument c WHERE " +
            "LOWER(c.filename) LIKE LOWER(CONCAT('%', ?1, '%')) OR " +
            "LOWER(c.complianceType) LIKE LOWER(CONCAT('%', ?1, '%')) OR " +
-           "LOWER(c.jurisdiction) LIKE LOWER(CONCAT('%', ?1, '%'))")
+           "LOWER(c.jurisdiction) LIKE LOWER(CONCAT('%', ?1, '%')) " +
+           "ORDER BY c.createdAt DESC")
     List<ComplianceDocument> search(String searchTerm);
+    
+    List<ComplianceDocument> findAllByOrderByCreatedAtDesc();
+    
+    @Query(value = "SELECT * FROM compliance_docs WHERE " +
+           "LOWER(filename) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+           "LOWER(compliance_type) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+           "LOWER(jurisdiction) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
+           "ORDER BY created_at DESC", nativeQuery = true)
+    List<ComplianceDocument> searchOrderByCreatedAtDesc(@Param("searchTerm") String searchTerm);
 } 
