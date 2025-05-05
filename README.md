@@ -6,6 +6,9 @@ all powered by real code telemetry and AI.
 
 ![9sxifm](https://github.com/user-attachments/assets/eda6fc9f-4367-487e-b44a-1fd963ea931b)
 
+![vista-architecture-diagram-v1](https://github.com/user-attachments/assets/dfe9b210-7188-44a4-81d0-881d392dc07e)
+
+
 
 ## Project Structure
 
