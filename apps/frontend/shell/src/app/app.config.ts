@@ -14,6 +14,8 @@ import {
 import { ConfigService } from './config.service';
 import { authInterceptor } from './auth/auth.interceptor';
 import { FederatedComplianceComponent } from './components/federated-compliance.component';
+import { FederatedSummaryComponent } from './components/federated-summary.component';
+import { FederatedInfrastructureComponent } from './components/federated-infrastructure.component';
 
 export function loadConfigFactory(configService: ConfigService) {
   return () => configService.loadConfig();

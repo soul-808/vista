@@ -1,0 +1,5 @@
+Incident Report - Data Breach Simulation
+
+Mock Incident Report detailing a simulated data breach event.
+Timeline: Unauthorized access detected on 2025-04-15.
+Impact: 2,000 records potentially exposed; containment and remediation steps initiated.

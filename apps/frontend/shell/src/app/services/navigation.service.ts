@@ -28,6 +28,11 @@ export class NavigationService {
       roles: [UserRole.EXECUTIVE, UserRole.COMPLIANCE],
     },
     {
+      path: '/infrastructure',
+      label: 'Infrastructure',
+      roles: [UserRole.EXECUTIVE, UserRole.ENGINEER],
+    },
+    {
       path: '/health',
       label: 'Health Check',
       roles: [UserRole.EXECUTIVE, UserRole.ENGINEER],

@@ -1,0 +1,4 @@
+Internal Audit Report for BetaBank Q1 2025
+
+Scope: Review of loan approval workflows and credit risk exposure.
+Findings: Documentation incomplete for 12% of assessed files; MTM valuation model discrepancies.

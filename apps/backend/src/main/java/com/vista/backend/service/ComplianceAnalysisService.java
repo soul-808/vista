@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vista.backend.dto.DocumentAnalysisResult;
+import com.vista.backend.entity.ComplianceType;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,10 +33,14 @@ public class ComplianceAnalysisService {
     
     // Common compliance document types
     private static final List<String> COMMON_COMPLIANCE_TYPES = Arrays.asList(
-            "KYC", "AML", "Sanctions", "Regulatory", "Policy", 
-            "Risk Assessment", "Audit Report", "Training", "Data Privacy", 
-            "Compliance Review", "GDPR", "SEC Filing", "Financial Statement",
-            "Infrastructure");
+        ComplianceType.KYC_AND_AML.getDisplayName(),
+        ComplianceType.CAPITAL_REPORTING_AND_PAYMENT_RULES.getDisplayName(),
+        ComplianceType.AUDIT_REPORT_AND_UI_COMPLIANCE.getDisplayName(),
+        ComplianceType.REGULATORY_AND_SANCTIONS.getDisplayName(),
+        ComplianceType.RISK_ASSESSMENT_AND_DATA_PRIVACY.getDisplayName(),
+        ComplianceType.INCIDENT_REPORT.getDisplayName(),
+        ComplianceType.OTHER.getDisplayName()
+    );
 
     @Autowired
     public ComplianceAnalysisService(OpenAIService openAIService, ObjectMapper objectMapper) {
@@ -137,22 +142,18 @@ public class ComplianceAnalysisService {
     }
     
     /**
-     * Normalizes compliance type to a standard format
+     * Normalizes compliance type to match one of our standard ComplianceType enum values
      */
     private String normalizeComplianceType(String rawType) {
         if (rawType == null || rawType.trim().isEmpty()) {
-            return "";
+            return ComplianceType.OTHER.getDisplayName();
         }
         
-        // Check for exact matches with our common types first
-        for (String commonType : COMMON_COMPLIANCE_TYPES) {
-            if (rawType.toUpperCase().contains(commonType.toUpperCase())) {
-                return commonType;
-            }
-        }
+        // Try to find a match with our defined compliance types
+        ComplianceType matchedType = ComplianceType.fromDisplayName(rawType);
         
-        // If no match, return the cleaned raw type
-        return rawType.trim();
+        // Return the display name of the matched type
+        return matchedType.getDisplayName();
     }
 
     private String extractTextFromDocument(byte[] content, String filename) {

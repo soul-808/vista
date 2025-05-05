@@ -1,0 +1,5 @@
+Risk Assessment Report - ACME Corp
+
+This is a mock Risk Assessment Report for ACME Corp covering operations Q1 2025.
+Key findings include potential AML gaps in transaction monitoring and KYC process inconsistencies.
+Recommendations: enhance identity verification procedures and increase transaction threshold alerts.

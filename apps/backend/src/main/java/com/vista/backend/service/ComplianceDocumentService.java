@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.vista.backend.dto.ComplianceDocumentDTO;
 import com.vista.backend.dto.UserDto;
 import com.vista.backend.entity.ComplianceDocument;
+import com.vista.backend.entity.ComplianceType;
 import com.vista.backend.entity.User;
 import com.vista.backend.repository.ComplianceDocumentRepository;
 import com.vista.backend.repository.UserRepository;
@@ -51,6 +52,12 @@ public class ComplianceDocumentService {
     }
 
     public List<ComplianceDocumentDTO> getDocumentsByComplianceType(String complianceType) {
+        // We can still validate against the enum if needed
+        if (complianceType != null) {
+            // Optional validation: check if it's a valid compliance type
+            ComplianceType.fromDisplayName(complianceType); // This will return OTHER if not valid
+        }
+        
         return complianceDocumentRepository.findByComplianceTypeOrderByCreatedAtDesc(complianceType).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());

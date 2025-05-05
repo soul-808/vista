@@ -6387,12 +6387,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dashboard-ccb750@workspace:apps/frontend/dashboard":
-  version: 0.0.0-use.local
-  resolution: "dashboard-ccb750@workspace:apps/frontend/dashboard"
-  languageName: unknown
-  linkType: soft
-
 "data-urls@npm:^3.0.2":
   version: 3.0.2
   resolution: "data-urls@npm:3.0.2"
@@ -8300,6 +8294,36 @@ __metadata:
   checksum: 10c0/7faca22584600a9dc5b9fca2cd5feb7135ac8c935449837b315676b4c90aa4f391ec4f42240178244b5a34e8bede1948627fda392ca3191522fc46b34e985ab2
   languageName: node
   linkType: hard
+
+"infrastructure@workspace:apps/frontend/infrastructure":
+  version: 0.0.0-use.local
+  resolution: "infrastructure@workspace:apps/frontend/infrastructure"
+  dependencies:
+    "@eslint/js": "npm:^9.22.0"
+    "@originjs/vite-plugin-federation": "npm:^1.4.1"
+    "@tanstack/react-query": "npm:^5.75.2"
+    "@types/node": "npm:^22.15.3"
+    "@types/react": "npm:^19.0.10"
+    "@types/react-dom": "npm:^19.0.4"
+    "@vitejs/plugin-react": "npm:^4.4.1"
+    autoprefixer: "npm:^10.4.21"
+    axios: "npm:^1.9.0"
+    eslint: "npm:^9.22.0"
+    eslint-plugin-react-hooks: "npm:^5.2.0"
+    eslint-plugin-react-refresh: "npm:^0.4.19"
+    globals: "npm:^16.0.0"
+    lucide-react: "npm:^0.507.0"
+    msw: "npm:^2.7.6"
+    postcss: "npm:^8.5.3"
+    react: "npm:19.0.0"
+    react-dom: "npm:19.0.0"
+    recharts: "npm:^2.15.3"
+    tailwindcss: "npm:^3.4.1"
+    typescript: "npm:~5.7.2"
+    typescript-eslint: "npm:^8.26.1"
+    vite: "npm:^6.3.1"
+  languageName: unknown
+  linkType: soft
 
 "inherits@npm:2, inherits@npm:2.0.4, inherits@npm:^2.0.1, inherits@npm:^2.0.3, inherits@npm:^2.0.4, inherits@npm:~2.0.3":
   version: 2.0.4

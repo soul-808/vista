@@ -1,5 +1,5 @@
 import React from "react";
-import { ComplianceDocument } from "../../types/compliance";
+import { ComplianceDocument, ComplianceType } from "../../types/compliance";
 import {
   ResponsiveContainer,
   PieChart,
@@ -12,6 +12,17 @@ import {
 interface RiskChartsProps {
   filteredDocuments: ComplianceDocument[];
 }
+
+// Map of compliance types to colors
+const COMPLIANCE_TYPE_COLORS: Record<string, string> = {
+  [ComplianceType.KYC_AND_AML]: "#3B82F6",
+  [ComplianceType.CAPITAL_REPORTING_AND_PAYMENT_RULES]: "#8B5CF6",
+  [ComplianceType.AUDIT_REPORT_AND_UI_COMPLIANCE]: "#EC4899",
+  [ComplianceType.REGULATORY_AND_SANCTIONS]: "#F59E0B",
+  [ComplianceType.RISK_ASSESSMENT_AND_DATA_PRIVACY]: "#10B981",
+  [ComplianceType.INCIDENT_REPORT]: "#6366F1",
+  [ComplianceType.OTHER]: "#9CA3AF",
+};
 
 export const RiskCharts: React.FC<RiskChartsProps> = ({
   filteredDocuments,
@@ -34,13 +45,15 @@ export const RiskCharts: React.FC<RiskChartsProps> = ({
     },
   ];
 
-  const complianceTypeData = Array.from(
-    new Set(filteredDocuments.map((doc) => doc.complianceType))
-  ).map((type) => ({
-    name: type,
-    count: filteredDocuments.filter((doc) => doc.complianceType === type)
-      .length,
-  }));
+  // Create data for compliance type distribution using the enum values
+  const complianceTypeData = Object.values(ComplianceType)
+    .map((type) => ({
+      name: type,
+      count: filteredDocuments.filter((doc) => doc.complianceType === type)
+        .length,
+      color: COMPLIANCE_TYPE_COLORS[type] || "#9CA3AF",
+    }))
+    .filter((item) => item.count > 0); // Only show types that have documents
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6 mb-6">
@@ -95,24 +108,9 @@ export const RiskCharts: React.FC<RiskChartsProps> = ({
                   fill="#3B82F6"
                   dataKey="count"
                   nameKey="name"
-                  label={({ name, percent }) =>
-                    `${name}: ${(percent * 100).toFixed(0)}%`
-                  }
                 >
-                  {complianceTypeData.map((_, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={
-                        [
-                          "#3B82F6",
-                          "#8B5CF6",
-                          "#EC4899",
-                          "#F59E0B",
-                          "#10B981",
-                          "#6366F1",
-                        ][index % 6]
-                      }
-                    />
+                  {complianceTypeData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
                 <Tooltip

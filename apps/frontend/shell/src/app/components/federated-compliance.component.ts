@@ -13,7 +13,6 @@ import { CommonModule } from '@angular/common';
       <p>{{ errorMessage }}</p>
     </div>
     <div *ngIf="!loading && !error">
-      <p>Web component should appear below:</p>
       <compliance-mfe
         style="display: block; width: 100%; height: 800px;"
       ></compliance-mfe>

@@ -17,6 +17,7 @@ import com.vista.backend.dto.ComplianceDocumentDTO;
 import com.vista.backend.dto.DocumentAnalysisResult;
 import com.vista.backend.dto.UserDto;
 import com.vista.backend.entity.ComplianceDocument;
+import com.vista.backend.entity.ComplianceType;
 import com.vista.backend.entity.User;
 import com.vista.backend.repository.ComplianceDocumentRepository;
 import com.vista.backend.repository.UserRepository;
@@ -67,6 +68,17 @@ public class DocumentUploadService {
         String complianceType = analysis.getComplianceType();
         if (complianceType == null || complianceType.trim().isEmpty()) {
             complianceType = userSelectedDocType; // Fall back to user selection if AI didn't provide a type
+        }
+        
+        // Optional validation against the enum
+        if (complianceType != null) {
+            // Verify it's one of our known compliance types, if not it will return OTHER
+            ComplianceType validatedType = ComplianceType.fromDisplayName(complianceType);
+            if (validatedType == ComplianceType.OTHER && 
+                    !complianceType.equalsIgnoreCase(ComplianceType.OTHER.getDisplayName())) {
+                // If the type was not recognized and wasn't explicitly "Other", use the display name of OTHER
+                complianceType = ComplianceType.OTHER.getDisplayName();
+            }
         }
         
         log.info("Document analysis complete - AI risk score: {}, User selected type: {}, AI determined type: {}", 

@@ -1,0 +1,5 @@
+Regulatory Filing - ACME Corp 10-K 2024
+
+This mock 10-K filing for ACME Corp includes financial statements, risk factors, and MD&A sections.
+Financial highlights: Revenue growth of 12%, net income margin of 8%.
+Risk Factors include market volatility and regulatory compliance uncertainties.
