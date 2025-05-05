@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
@@ -11,8 +11,9 @@ import { filter, map } from 'rxjs/operators';
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.scss'],
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit {
   showNav = true;
+  currentYear = new Date().getFullYear();
 
   constructor(private router: Router, private route: ActivatedRoute) {
     this.router.events
@@ -34,5 +35,9 @@ export class MainLayoutComponent {
       window.sessionStorage.removeItem('auth_token');
       this.router.navigate(['/login']);
     }
+  }
+
+  ngOnInit() {
+    // Additional initialization logic if needed
   }
 }

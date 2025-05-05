@@ -34,10 +34,7 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
             <div>
               <p className="text-sm font-medium text-red-700">High Risk</p>
               <p className="text-2xl font-bold text-red-900">
-                {
-                  filteredDocuments.filter((d) => d.risk_score === "HIGH")
-                    .length
-                }
+                {filteredDocuments.filter((d) => d.riskScore === "HIGH").length}
               </p>
             </div>
             <div className="p-2 bg-white rounded-full shadow-sm">
@@ -52,9 +49,8 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
               <p className="text-sm font-medium text-green-700">Compliant</p>
               <p className="text-2xl font-bold text-green-900">
                 {
-                  filteredDocuments.filter(
-                    (d) => d.flagged_clauses.length === 0
-                  ).length
+                  filteredDocuments.filter((d) => d.flaggedClauses.length === 0)
+                    .length
                 }
               </p>
             </div>
@@ -73,7 +69,7 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
               <p className="text-2xl font-bold text-amber-900">
                 {
                   filteredDocuments.filter((d) => {
-                    const date = new Date(d.created_at);
+                    const date = new Date(d.createdAt);
                     const now = new Date();
                     const diffTime = Math.abs(now.getTime() - date.getTime());
                     const diffDays = Math.ceil(

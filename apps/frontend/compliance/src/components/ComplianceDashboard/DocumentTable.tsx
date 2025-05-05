@@ -39,12 +39,12 @@ export const DocumentTable: React.FC<DocumentTableProps> = ({
                   <FileText size={16} className="text-blue-500 mr-2" />
                   {doc.filename}
                 </div>
-                <div className="col-span-2">{doc.compliance_type}</div>
+                <div className="col-span-2">{doc.complianceType}</div>
                 <div className="col-span-2">{doc.jurisdiction}</div>
                 <div className="col-span-1">
-                  <RiskBadge risk={doc.risk_score} />
+                  <RiskBadge risk={doc.riskScore} />
                 </div>
-                <div className="col-span-2">{formatDate(doc.created_at)}</div>
+                <div className="col-span-2">{formatDate(doc.createdAt)}</div>
                 <div className="col-span-2 flex space-x-2">
                   <button className="p-2 text-blue-600 hover:text-blue-800 bg-blue-50 rounded-full hover:bg-blue-100 transition-colors">
                     <Download size={16} />

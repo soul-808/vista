@@ -20,14 +20,14 @@ const ComplianceDashboard: React.FC = () => {
   const filteredDocuments = useMemo(() => {
     let result = documents;
     if (filter !== "all") {
-      result = result.filter((doc) => doc.risk_score === filter.toUpperCase());
+      result = result.filter((doc) => doc.riskScore === filter.toUpperCase());
     }
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       result = result.filter(
         (doc) =>
           doc.filename.toLowerCase().includes(term) ||
-          doc.compliance_type.toLowerCase().includes(term) ||
+          doc.complianceType.toLowerCase().includes(term) ||
           doc.jurisdiction.toLowerCase().includes(term) ||
           doc.tags.some((tag) => tag.toLowerCase().includes(term))
       );

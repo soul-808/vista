@@ -3,9 +3,11 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 main {
-  flex: 1;
+  flex: 1 0 auto; /* Use flex to push footer down */
+  padding-bottom: 60px; /* Increase space for footer height */
 }
 .nav-bar {
   display: flex;
@@ -86,10 +88,17 @@ nav {
 .logout-btn:hover {
   background: #b91c1c;
 }
-/* Add footer styles */
+/* Footer styles */
 footer {
-  background: #f3f4f6;
+  position: fixed; /* Fix footer to viewport */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
   padding: 1rem;
   text-align: center;
   color: #6b7280;
+  z-index: 100; /* Ensure it's above all MFE content */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05); /* Subtle shadow to separate it */
 }

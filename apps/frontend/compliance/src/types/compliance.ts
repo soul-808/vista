@@ -1,14 +1,22 @@
 export type RiskLevel = "HIGH" | "MEDIUM" | "LOW";
 
+export interface UserDto {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+}
+
 export interface ComplianceDocument {
   id: string;
   filename: string;
-  uploaded_by: string;
-  risk_score: RiskLevel;
-  compliance_type: string;
-  source_system: string;
+  uploadedBy: UserDto;
+  riskScore: RiskLevel;
+  complianceType: string;
+  sourceSystem: string;
   jurisdiction: string;
   tags: string[];
-  flagged_clauses: string[];
-  created_at: string;
+  flaggedClauses: string[];
+  notes?: string;
+  createdAt: string;
 }
