@@ -18,6 +18,11 @@ export interface NavItem {
 export class NavigationService {
   private navItems: NavItem[] = [
     {
+      path: '/summary',
+      label: 'Executive Summary',
+      roles: [UserRole.EXECUTIVE],
+    },
+    {
       path: '/compliance',
       label: 'Compliance',
       roles: [UserRole.EXECUTIVE, UserRole.COMPLIANCE],

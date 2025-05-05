@@ -7,6 +7,7 @@ import { RoleGuard } from './auth/role.guard';
 import { MainLayoutComponent } from './layouts/main-layout.component';
 import { AuthLayoutComponent } from './layouts/auth-layout.component';
 import { FederatedComplianceComponent } from './components/federated-compliance.component';
+import { FederatedSummaryComponent } from './components/federated-summary.component';
 import { UserRole } from '../../../shared/src/lib/models/roles.enum';
 
 export const routes: Routes = [
@@ -36,6 +37,15 @@ export const routes: Routes = [
         data: {
           showNav: true,
           roles: [UserRole.EXECUTIVE, UserRole.COMPLIANCE],
+        },
+      },
+      {
+        path: 'summary',
+        component: FederatedSummaryComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: {
+          showNav: true,
+          roles: [UserRole.EXECUTIVE],
         },
       },
     ],
