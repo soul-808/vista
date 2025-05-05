@@ -4,8 +4,24 @@ set -e
 # MFE build and deploy script for Vista application
 # mfe-name: compliance, infrastructure, summary
 
+WATCH=0
+POSITIONAL=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -w|--watch)
+      WATCH=1
+      shift
+      ;;
+    *)
+      POSITIONAL+=("$1")
+      shift
+      ;;
+  esac
+done
+set -- "${POSITIONAL[@]}"
+
 if [ $# -ne 1 ]; then
-  echo "Usage: $0 <mfe-name>"
+  echo "Usage: $0 [-w] <mfe-name>"
   exit 1
 fi
 
@@ -175,5 +191,10 @@ if ! oc apply -f "${DEPLOY_YAML}"; then
     exit 1
 fi
 
-echo "\n\n✅ Deployment initiated. Watching pod status..."
-oc get pods -l app=vista-${MFE_NAME} -w 
+echo "\n\n✅ Deployment initiated."
+if [ "$WATCH" -eq 1 ]; then
+  echo "Watching pod status..."
+  oc get pods -l app=vista-${MFE_NAME} -w
+else
+  echo "Run with -w to watch pod status."
+fi 
