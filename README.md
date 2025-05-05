@@ -4,6 +4,9 @@
 Vista helps engineering, compliance, and leadership teams monitor software health, generate audit summaries, and track system risk in a unified view — 
 all powered by real code telemetry and AI.
 
+![9sxifm](https://github.com/user-attachments/assets/eda6fc9f-4367-487e-b44a-1fd963ea931b)
+
+
 ## Project Structure
 
 ```
