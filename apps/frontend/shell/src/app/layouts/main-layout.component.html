@@ -12,15 +12,16 @@
               />
             </a>
           </li>
-          <li>
-            <a routerLink="/health" routerLinkActive="active">Health Check</a>
-          </li>
-          <li>
-            <a routerLink="/compliance" routerLinkActive="active">Compliance</a>
+          <!-- Dynamic navigation items based on user role -->
+          <li *ngFor="let item of navItems">
+            <a [routerLink]="item.path" routerLinkActive="active">
+              {{ item.label }}
+            </a>
           </li>
         </ul>
       </nav>
       <div class="nav-actions">
+        <span class="user-role" *ngIf="userRole">{{ userRole }}</span>
         <button class="logout-btn" (click)="logout()">Logout</button>
       </div>
     </div>

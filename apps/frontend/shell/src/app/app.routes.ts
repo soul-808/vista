@@ -3,9 +3,11 @@ import { HealthCheckComponent } from './components/health-check/health-check.com
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './auth/login/login.component';
 import { AuthGuard } from './auth/auth.guard';
+import { RoleGuard } from './auth/role.guard';
 import { MainLayoutComponent } from './layouts/main-layout.component';
 import { AuthLayoutComponent } from './layouts/auth-layout.component';
 import { FederatedComplianceComponent } from './components/federated-compliance.component';
+import { UserRole } from '../../../shared/src/lib/models/roles.enum';
 
 export const routes: Routes = [
   {
@@ -21,14 +23,20 @@ export const routes: Routes = [
       {
         path: 'health',
         component: HealthCheckComponent,
-        canActivate: [AuthGuard],
-        data: { showNav: true },
+        canActivate: [AuthGuard, RoleGuard],
+        data: {
+          showNav: true,
+          roles: [UserRole.EXECUTIVE, UserRole.ENGINEER],
+        },
       },
       {
         path: 'compliance',
         component: FederatedComplianceComponent,
-        canActivate: [AuthGuard],
-        data: { showNav: true },
+        canActivate: [AuthGuard, RoleGuard],
+        data: {
+          showNav: true,
+          roles: [UserRole.EXECUTIVE, UserRole.COMPLIANCE],
+        },
       },
     ],
   },
