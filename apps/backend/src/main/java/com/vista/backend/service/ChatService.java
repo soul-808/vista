@@ -249,8 +249,9 @@ public class ChatService {
         try {
             // Prompt to create a concise combined response with specific formatting
             String prompt = String.format("""
-                Talk like a regular person in conversation unless asked for something require one of the principles.
+                Talk like a regular person in conversation and blend with the principles by picking what you think is most important.
                 Dont give me more than I asked for.
+                Use selective bolding for scanning
 
                 You are an expert at synthesizing information from multiple sources into concise insights.
                 
