@@ -5,7 +5,7 @@ metadata:
   labels:
     app: vista-compliance
   annotations:
-    timestamp: "20250505161547"
+    timestamp: "20250505172159"
 spec:
   replicas: 1
   selector:
@@ -18,14 +18,8 @@ spec:
     spec:
       containers:
       - name: vista-compliance
-        image: docker.io/soul808/vista-compliance:latest-20250505161547
+        image: docker.io/soul808/vista-compliance:latest-20250505172159
         imagePullPolicy: Always
-        command:
-          - nginx
-          - "-g"
-          - "daemon off;"
-          - "-c"
-          - "/etc/nginx/nginx.conf"
         env:
         - name: API_URL
           value: https://vista-backend-brandonarka3-dev.apps.rm3.7wse.p1.openshiftapps.com/api

@@ -50,6 +50,7 @@ if ! docker buildx build \
     --platform=linux/amd64 \
     --load \
     --pull \
+    --no-cache \
     -t ${IMAGE}:${TIMESTAMP_TAG} \
     -t ${IMAGE}:${LATEST_TAG} \
     -f apps/frontend/shell/Dockerfile \

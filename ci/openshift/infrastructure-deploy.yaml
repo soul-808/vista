@@ -5,7 +5,7 @@ metadata:
   labels:
     app: vista-infrastructure
   annotations:
-    timestamp: "20250505161559"
+    timestamp: "20250505171745"
 spec:
   replicas: 1
   selector:
@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: vista-infrastructure
-        image: docker.io/soul808/vista-infrastructure:latest-20250505161559
+        image: docker.io/soul808/vista-infrastructure:latest-20250505171745
         imagePullPolicy: Always
         env:
         - name: API_URL
