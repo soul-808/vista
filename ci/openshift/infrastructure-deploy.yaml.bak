@@ -5,7 +5,7 @@ metadata:
   labels:
     app: vista-infrastructure
   annotations:
-    timestamp: "<to-be-updated-by-script>"
+    timestamp: "20250505130225"
 spec:
   replicas: 1
   selector:
@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: vista-infrastructure
-        image: docker.io/soul808/vista-infrastructure:latest
+        image: docker.io/soul808/vista-infrastructure:latest-20250505130225
         imagePullPolicy: Always
         env:
         - name: API_URL
@@ -74,7 +74,7 @@ spec:
     name: vista-infrastructure
   port:
     targetPort: 8080
-  path: /infrastructure(/|$)(.*)
+  path: /
   tls:
     termination: edge
     insecureEdgeTerminationPolicy: Redirect 
