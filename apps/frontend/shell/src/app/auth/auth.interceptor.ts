@@ -11,7 +11,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
 
   // Skip interceptor for login request
-  if (req.url.includes('/api/auth/login')) {
+  if (req.url.endsWith('/auth/login')) {
     console.log('Skipping interceptor for login request');
     return next(req);
   }

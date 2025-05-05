@@ -1,5 +1,3 @@
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
   "extends": "./tsconfig.base.local.json",
   "compilerOptions": {
@@ -24,14 +22,27 @@
       "ES2022",
       "dom"
     ],
-    "types": ["jest", "node"],
+    "types": [
+      "jest",
+      "node"
+    ],
     "paths": {
-      "@/*": ["src/*"],
-      "@vista/models/*": ["../../../libs/shared-models/src/*"],
-      "@vista/shared/*": ["../../../libs/shared-utils/src/*"],
-      "@vista/auth/*": ["../../../libs/shared-auth/src/*"]
+      "@/*": [
+        "src/*"
+      ],
+      "@vista/models/*": [
+        "../../../libs/shared-models/src/*"
+      ],
+      "@vista/shared/*": [
+        "../../../libs/shared-utils/src/*"
+      ],
+      "@vista/auth/*": [
+        "../../../libs/shared-auth/src/*"
+      ]
     },
-    "typeRoots": ["../../../node_modules/@types"]
+    "typeRoots": [
+      "../../../node_modules/@types"
+    ]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -39,5 +50,8 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "include": ["src/**/*", "**/*.spec.ts"]
+  "include": [
+    "src/**/*",
+    "**/*.spec.ts"
+  ]
 }

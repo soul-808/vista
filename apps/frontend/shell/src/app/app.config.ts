@@ -13,6 +13,7 @@ import {
 } from '@angular/platform-browser';
 import { ConfigService } from './config.service';
 import { authInterceptor } from './auth/auth.interceptor';
+import { FederatedComplianceComponent } from './components/federated-compliance.component';
 
 export function loadConfigFactory(configService: ConfigService) {
   return () => configService.loadConfig();

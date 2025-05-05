@@ -1,0 +1,7 @@
+{
+  "apiUrl": "http://localhost:8080/api",
+  "complianceUrl": "http://localhost:4202",
+  "appName": "Shell Application",
+  "version": "1.0.0",
+  "environment": "development"
+}

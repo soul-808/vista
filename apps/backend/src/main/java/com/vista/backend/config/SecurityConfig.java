@@ -44,7 +44,8 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList(
             "https://vista-frontend-brandonarka3-dev.apps.rm3.7wse.p1.openshiftapps.com",
             "http://localhost:3000",
-            "http://localhost:4200"
+            "http://localhost:4200",
+            "http://localhost:4201"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
