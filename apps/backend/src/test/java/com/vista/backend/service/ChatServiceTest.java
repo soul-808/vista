@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,12 +35,18 @@ class ChatServiceTest {
     @Mock
     private ContentRetriever contentRetriever;
 
+    @Mock
+    private SqlQueryService sqlQueryService;
+
+    @Mock
+    private OpenAIService openAIService;
+
     private RetrievalAugmentor retrievalAugmentor;
     private ChatMemory chatMemory;
     private ChatService chatService;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
         
         // Create a test chat memory
@@ -59,9 +66,14 @@ class ChatServiceTest {
         // Mock chat model to return a predefined response
         Response<AiMessage> response = Response.from(new AiMessage("Based on the retrieved documents, I can provide you this answer."));
         when(chatLanguageModel.generate(anyList())).thenReturn(response);
-                
-        // Initialize service
-        chatService = new ChatService(chatLanguageModel, retrievalAugmentor, chatMemory);
+        
+        // Mock SqlQueryService and OpenAIService as needed
+        when(sqlQueryService.executeQueryFormatted(any())).thenReturn("SQL data response");
+        when(openAIService.callOpenAI(any())).thenReturn("true");
+        when(openAIService.extractContentFromResponse(any())).thenReturn("true");
+        
+        // Initialize service with all required dependencies
+        chatService = new ChatService(chatLanguageModel, retrievalAugmentor, chatMemory, sqlQueryService, openAIService);
     }
 
     @Test

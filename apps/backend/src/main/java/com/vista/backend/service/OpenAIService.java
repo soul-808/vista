@@ -38,6 +38,7 @@ public class OpenAIService {
     public OpenAIService(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
+        
     }
 
     /**
@@ -64,8 +65,17 @@ public class OpenAIService {
         requestBody.put("messages", messages);
 
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+        
+        // Ensure the apiUrl contains the full path to chat/completions
+        String fullUrl = apiUrl;
+        if (!fullUrl.endsWith("/chat/completions")) {
+            if (!fullUrl.endsWith("/")) {
+                fullUrl += "/";
+            }
+            fullUrl += "chat/completions";
+        }
 
-        ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, requestEntity, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(fullUrl, requestEntity, String.class);
         return response.getBody();
     }
 
