@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { MessageSquare, Send, BarChart2, HelpCircle } from "lucide-react";
 import "../../index.css"; // Import Tailwind CSS
 import { useAiChat } from "../../hooks";
+import ReactMarkdown from "react-markdown";
 
 export const ChatPanel = () => {
   // Use the AI chat hook
@@ -112,12 +113,8 @@ export const ChatPanel = () => {
   // Handle clicking a suggested question
   const handleSuggestedQuestion = (question: string) => {
     setInput(question);
-    // Focus the textarea after setting input
-    setTimeout(() => {
-      if (textareaRef.current) {
-        textareaRef.current.focus();
-      }
-    }, 0);
+    // Submit the question immediately without waiting for user to press enter
+    sendMessage(question);
   };
 
   // Handle pressing Enter
@@ -274,7 +271,7 @@ export const ChatPanel = () => {
                     : styles.messageAssistant
                 }
               >
-                {message.content}
+                <ReactMarkdown>{message.content}</ReactMarkdown>
               </div>
 
               {message.role === "user" && (

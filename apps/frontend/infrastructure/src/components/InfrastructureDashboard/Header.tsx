@@ -1,5 +1,5 @@
 import React from "react";
-import { Calendar, ChevronDown } from "lucide-react";
+import { Calendar } from "lucide-react";
 
 interface HeaderProps {
   timeRange: string;
@@ -34,17 +34,6 @@ export const Header: React.FC<HeaderProps> = ({ timeRange, setTimeRange }) => {
                 <option value="30d">Last 30 days</option>
                 <option value="90d">Last 90 days</option>
               </select>
-            </div>
-            <div className="relative">
-              <button className="flex items-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg px-3 py-1.5">
-                <img
-                  className="h-6 w-6 rounded-full mr-2"
-                  src="/api/placeholder/24/24"
-                  alt="Profile"
-                />
-                <span>John Doe</span>
-                <ChevronDown size={16} className="ml-1" />
-              </button>
             </div>
           </div>
         </div>

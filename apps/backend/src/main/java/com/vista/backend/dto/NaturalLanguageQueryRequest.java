@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO for natural language query requests
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatRequest {
-    private String sessionId;
-    private String question;
+public class NaturalLanguageQueryRequest {
+    private String query;
     private String username;
 } 

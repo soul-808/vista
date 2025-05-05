@@ -1,0 +1,237 @@
+.home-container {
+  min-height: 100vh;
+  background: #0a2a5c;
+  background: linear-gradient(to bottom, #3f51b5, #0a2a5c);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.main-content {
+  max-width: 80%;
+  margin: 0 auto;
+  padding: 48px 16px 0 16px;
+  text-align: center;
+}
+
+.main-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 18px;
+}
+
+.accent {
+  color: #5ad1ff;
+}
+
+.subtitle {
+  color: #e0e6ed;
+  font-size: 1.15rem;
+  margin-bottom: 32px;
+}
+
+.feature-list {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 32px;
+  list-style: none;
+  padding: 0;
+  color: #e0e6ed;
+  font-size: 1rem;
+}
+.feature-list i-lucide {
+  margin-right: 8px;
+  color: #5ad1ff;
+}
+
+.cta-btn {
+  background: #fff;
+  color: #0a2a5c;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: background 0.2s;
+  text-decoration: none;
+}
+.cta-btn i-lucide {
+  margin-left: 8px;
+}
+.cta-btn:hover {
+  background: #e0e6ed;
+}
+
+.role-cards {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  justify-content: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.role-card {
+  background: #173a6a;
+  border-radius: 16px;
+  padding: 32px 24px;
+  min-width: 260px;
+  max-width: 320px;
+  flex: 1 1 260px;
+  color: #fff;
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.08);
+  text-align: left;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  border: 2px solid transparent;
+}
+.role-card:hover:not(.disabled) {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.13);
+  border-color: #5ad1ff;
+}
+.role-card.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.role-card.executive {
+  background: #4666c5;
+}
+.role-card.compliance {
+  background: #7c4dbe;
+}
+.role-card.infrastructure {
+  background: #2e8c5a;
+}
+.icon {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.role-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.role-desc {
+  font-size: 1rem;
+  color: #e0e6ed;
+  margin-bottom: 18px;
+}
+.role-tags {
+  display: flex;
+  gap: 10px;
+  font-size: 0.95rem;
+}
+.role-tags span {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 2px 10px;
+  color: #fff;
+}
+.lock-icon {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  color: #5ad1ff;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px 16px 16px 16px;
+  color: #b0c4de;
+  font-size: 0.95rem;
+}
+.footer-links {
+  display: flex;
+  gap: 24px;
+}
+.footer-links a {
+  color: #b0c4de;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover {
+  color: #fff;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 32px 28px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  color: #173a6a;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.13);
+}
+.modal h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.modal p {
+  color: #3a4a5c;
+  margin-bottom: 18px;
+}
+.modal-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+.modal-btn {
+  padding: 10px 22px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #e0e6ed;
+  color: #173a6a;
+  transition: background 0.2s, color 0.2s;
+}
+.modal-btn.primary {
+  background: #0a2a5c;
+  color: #fff;
+}
+.modal-btn.primary:hover {
+  background: #5ad1ff;
+  color: #0a2a5c;
+}
+.modal-btn:hover {
+  background: #b0c4de;
+}
+.modal-icon {
+  background: #fbeaea;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px auto;
+}
