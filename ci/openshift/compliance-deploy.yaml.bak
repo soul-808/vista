@@ -5,7 +5,7 @@ metadata:
   labels:
     app: vista-compliance
   annotations:
-    timestamp: "20250505130132"
+    timestamp: "20250505163831"
 spec:
   replicas: 1
   selector:
@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: vista-compliance
-        image: docker.io/soul808/vista-compliance:latest-20250505130132
+        image: docker.io/soul808/vista-compliance:latest-20250505163831
         imagePullPolicy: Always
         command:
           - nginx

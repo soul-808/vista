@@ -14,6 +14,7 @@ COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn .yarn
 COPY libs ./libs
 COPY apps/frontend/shell ./apps/frontend/shell
+COPY apps/frontend/shared ./apps/frontend/shared
 
 # Install dependencies
 RUN yarn install

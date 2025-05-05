@@ -25,7 +25,7 @@ const ComplianceDashboard: React.FC = () => {
     }
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      result = result.filter(
+      result = result?.filter(
         (doc) =>
           doc.filename.toLowerCase().includes(term) ||
           doc.complianceType.toLowerCase().includes(term) ||
@@ -35,7 +35,7 @@ const ComplianceDashboard: React.FC = () => {
           doc.tags.some((tag) => tag.toLowerCase().includes(term))
       );
     }
-    return result;
+    return result || [];
   }, [documents, filter, searchTerm]);
 
   const handleUpload = () => {

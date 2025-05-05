@@ -30,17 +30,17 @@ export const RiskCharts: React.FC<RiskChartsProps> = ({
   const riskDistribution = [
     {
       name: "High",
-      value: filteredDocuments.filter((d) => d.riskScore === "HIGH").length,
+      value: filteredDocuments?.filter((d) => d.riskScore === "HIGH").length,
       color: "#EF4444",
     },
     {
       name: "Medium",
-      value: filteredDocuments.filter((d) => d.riskScore === "MEDIUM").length,
+      value: filteredDocuments?.filter((d) => d.riskScore === "MEDIUM").length,
       color: "#F59E0B",
     },
     {
       name: "Low",
-      value: filteredDocuments.filter((d) => d.riskScore === "LOW").length,
+      value: filteredDocuments?.filter((d) => d.riskScore === "LOW").length,
       color: "#10B981",
     },
   ];
@@ -49,7 +49,7 @@ export const RiskCharts: React.FC<RiskChartsProps> = ({
   const complianceTypeData = Object.values(ComplianceType)
     .map((type) => ({
       name: type,
-      count: filteredDocuments.filter((doc) => doc.complianceType === type)
+      count: filteredDocuments?.filter((doc) => doc.complianceType === type)
         .length,
       color: COMPLIANCE_TYPE_COLORS[type] || "#9CA3AF",
     }))
