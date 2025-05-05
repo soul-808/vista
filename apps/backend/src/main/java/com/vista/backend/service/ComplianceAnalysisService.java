@@ -34,7 +34,8 @@ public class ComplianceAnalysisService {
     private static final List<String> COMMON_COMPLIANCE_TYPES = Arrays.asList(
             "KYC", "AML", "Sanctions", "Regulatory", "Policy", 
             "Risk Assessment", "Audit Report", "Training", "Data Privacy", 
-            "Compliance Review", "GDPR", "SEC Filing", "Financial Statement");
+            "Compliance Review", "GDPR", "SEC Filing", "Financial Statement",
+            "Infrastructure");
 
     @Autowired
     public ComplianceAnalysisService(OpenAIService openAIService, ObjectMapper objectMapper) {
@@ -88,7 +89,7 @@ public class ComplianceAnalysisService {
                 
                 String jurisdiction = contentJson.has("jurisdiction") 
                     ? truncateIfNeeded(contentJson.get("jurisdiction").asText(), MAX_JURISDICTION_LENGTH)
-                    : "";
+                    : "GLOBAL";
                 
                 return DocumentAnalysisResult.builder()
                     .success(true)
@@ -174,8 +175,8 @@ public class ComplianceAnalysisService {
                "1. riskScore: Assess the document's risk level - MUST be one of: LOW, MEDIUM, or HIGH\n" +
                "2. complianceType: Identify the specific compliance category this document belongs to. " +
                "Common types include: KYC, AML, Sanctions, Regulatory, Policy, Risk Assessment, " +
-               "Audit Report, Training, Data Privacy, etc. Be specific.\n" +
-               "3. jurisdiction: What geographical jurisdiction does this document apply to?\n" +
+               "Audit Report, Training, Data Privacy, Infrastructure, etc. Be specific.\n" +
+               "3. jurisdiction: What geographical jurisdiction does this document apply to? If the jurisdiction is not specified or is unclear, use 'GLOBAL' as the default.\n" +
                "4. tags: List up to 5 relevant tags for categorizing this document\n" +
                "5. flaggedClauses: List any concerning clauses that require attention\n" +
                "6. summary: A brief summary of the document content\n\n" +
@@ -228,7 +229,7 @@ public class ComplianceAnalysisService {
         builder.complianceType(complianceType);
         
         // Extract jurisdiction
-        String jurisdiction = "";
+        String jurisdiction = "GLOBAL";
         List<String> commonJurisdictions = Arrays.asList("US", "USA", "EU", "UK", "GLOBAL", "INTERNATIONAL");
         for (String j : commonJurisdictions) {
             if (content.toUpperCase().contains(j)) {

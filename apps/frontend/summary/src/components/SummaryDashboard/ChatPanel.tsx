@@ -1,26 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { MessageSquare, Send, BarChart2, HelpCircle } from "lucide-react";
 import "../../index.css"; // Import Tailwind CSS
-
-// Define message type for better type safety
-interface ChatMessage {
-  id: number;
-  role: "system" | "user" | "assistant";
-  content: string;
-}
+import { useAiChat } from "../../hooks";
 
 export const ChatPanel = () => {
-  // State for chat
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 1,
-      role: "system",
-      content:
-        "Welcome to Vista AI Assistant. Ask me anything about your organization's compliance, infrastructure, or risk metrics.",
-    },
-  ]);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
+  // Use the AI chat hook
+  const { messages, sendMessage, isLoading } = useAiChat(
+    "Welcome to Vista AI Assistant. Ask me anything about your organization's compliance, infrastructure, or risk metrics."
+  );
+
+  const [input, setInput] = React.useState("");
   const messageEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -107,62 +96,17 @@ export const ChatPanel = () => {
   }, []);
 
   // Handle chat submission
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (input.trim() === "") return;
 
-    // Add user message
-    setMessages([
-      ...messages,
-      { id: messages.length + 1, role: "user", content: input },
-    ]);
+    // Use the hook's sendMessage function
+    await sendMessage(input);
     setInput("");
-    setLoading(true);
 
     // Focus textarea and ensure it's in view
     if (textareaRef.current) {
       textareaRef.current.focus();
     }
-
-    // Simulate AI response
-    timeoutRef.current = setTimeout(() => {
-      let aiResponse;
-
-      // Generate different responses based on the query to simulate context awareness
-      if (
-        input.toLowerCase().includes("compliance") ||
-        input.toLowerCase().includes("risk")
-      ) {
-        aiResponse =
-          "Based on your compliance data, we have 3 high-risk documents that need immediate attention. These are related to KYC requirements and Basel III capital standards. Overall risk level is moderate, with a 12% improvement from last quarter.";
-      } else if (
-        input.toLowerCase().includes("server") ||
-        input.toLowerCase().includes("infrastructure")
-      ) {
-        aiResponse =
-          "Your infrastructure has 1 critical alert on the auth-prod-03 server. Memory utilization is at 92%, which exceeds the 90% threshold. There are also 5 servers with elevated CPU usage that should be monitored. Overall system health is at 87%.";
-      } else if (
-        input.toLowerCase().includes("board") ||
-        input.toLowerCase().includes("meeting")
-      ) {
-        aiResponse =
-          "For your board meeting, I recommend highlighting: 1) Reduced high-risk compliance issues by 42% QoQ, 2) Infrastructure uptime improved to 99.96%, 3) Successful remediation of the SEC audit findings from Q1, and 4) New AI-based monitoring deployed to 78% of critical systems.";
-      } else if (
-        input.toLowerCase().includes("summary") ||
-        input.toLowerCase().includes("overview")
-      ) {
-        aiResponse =
-          "Executive Summary: Compliance posture is strong with 42 low-risk, 7 medium-risk, and 3 high-risk items. Infrastructure shows 1 critical alert requiring immediate attention. Overall system health is at 87%. Risk trend is declining month-over-month by approximately 8%.";
-      } else {
-        aiResponse =
-          "I've analyzed your question across our data sources. Your organization currently has 3 high-priority compliance items and 1 critical infrastructure alert. Would you like more specific details about either of these areas?";
-      }
-
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { id: prevMessages.length + 2, role: "assistant", content: aiResponse },
-      ]);
-      setLoading(false);
-    }, 1500);
   };
 
   // Handle clicking a suggested question
@@ -341,7 +285,7 @@ export const ChatPanel = () => {
             </div>
           ))}
 
-          {loading && (
+          {isLoading && (
             <div
               className="flex justify-start"
               role="status"
@@ -393,8 +337,6 @@ export const ChatPanel = () => {
 
       {/* Chat Input */}
       <div className="p-4 border-t border-blue-100 bg-white flex-shrink-0">
-        {/* make input text color blue */}
-
         <div className="flex items-center bg-blue-50 text-blue-900 rounded-full shadow-inner border border-blue-100 overflow-hidden">
           <textarea
             ref={textareaRef}
@@ -404,18 +346,18 @@ export const ChatPanel = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            disabled={loading}
+            disabled={isLoading}
             style={{ overflowY: "auto" }}
             aria-label="Chat input"
           />
           <button
             className={`p-3 m-1 rounded-full flex-shrink-0 transition-colors ${
-              loading || input.trim() === ""
+              isLoading || input.trim() === ""
                 ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                 : "bg-blue-600 text-white hover:bg-blue-700"
             }`}
             onClick={handleSubmit}
-            disabled={loading || input.trim() === ""}
+            disabled={isLoading || input.trim() === ""}
             aria-label="Send message"
           >
             <Send size={18} />

@@ -124,6 +124,23 @@
 			<artifactId>dotenv-java</artifactId>
 			<version>2.3.2</version>
 		</dependency>
+
+		<!-- LangChain Java Dependencies -->
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j</artifactId>
+			<version>0.28.0</version>
+		</dependency>
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j-pinecone</artifactId>
+			<version>0.28.0</version>
+		</dependency>
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j-open-ai</artifactId>
+			<version>0.28.0</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>

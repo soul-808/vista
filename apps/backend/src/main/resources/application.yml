@@ -50,6 +50,9 @@ logging:
     org.springframework.security.web.FilterChainProxy: DEBUG
     org.springframework.security.web.authentication: DEBUG
     org.springframework.security.web.access: DEBUG
+    io.grpc: DEBUG
+    io.pinecone: TRACE
+    dev.langchain4j: DEBUG
 
 management:
   endpoints:
@@ -65,3 +68,10 @@ openai:
     key: ${OPENAI_API_KEY:your-api-key-here}
     url: ${OPENAI_API_URL:https://api.openai.com/v1/chat/completions}
     model: ${OPENAI_API_MODEL:gpt-4-turbo}
+
+pinecone:
+  api:
+    key: ${PINECONE_API_KEY:your-pinecone-api-key}
+    environment: ${PINECONE_ENVIRONMENT:aws}
+    indexName: ${PINECONE_INDEX_NAME:llama-text-embed-v2-index}
+    projectName: ${PINECONE_PROJECT_NAME:your-pinecone-project-name}
