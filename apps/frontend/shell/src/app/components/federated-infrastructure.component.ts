@@ -42,15 +42,11 @@ export class FederatedInfrastructureComponent implements OnInit {
   async ngOnInit() {
     try {
       this.loading = true;
-      console.log('Loading infrastructure web component...');
+      // Fetch remotes.json at runtime
+      const response = await fetch('/assets/remotes.json');
+      const remotes = await response.json();
+      const remoteEntryUrl = remotes['infrastructure'];
 
-      // Determine if we're in development or production mode
-      const isDev = window.location.hostname === 'localhost';
-      const remoteEntryUrl = isDev
-        ? 'http://localhost:4204/remoteEntry.js'
-        : 'http://localhost:4204/assets/remoteEntry.js';
-
-      console.log('Environment:', isDev ? 'Development' : 'Production');
       console.log('Remote entry URL:', remoteEntryUrl);
 
       // Load the web component

@@ -34,16 +34,17 @@ export class FederatedComplianceComponent implements OnInit {
   async ngOnInit() {
     try {
       this.loading = true;
-      console.log('Loading compliance web component...');
-      console.log(
-        'Remote entry URL:',
-        'http://localhost:4202/assets/remoteEntry.js'
-      );
+      // Fetch remotes.json at runtime
+      const response = await fetch('/assets/remotes.json');
+      const remotes = await response.json();
+      const remoteEntryUrl = remotes['compliance'];
+
+      console.log('Remote entry URL:', remoteEntryUrl);
 
       // Load the web component
       const module = await loadRemoteModule({
         type: 'module',
-        remoteEntry: 'http://localhost:4202/assets/remoteEntry.js',
+        remoteEntry: remoteEntryUrl,
         exposedModule: './ComplianceWC',
       });
 

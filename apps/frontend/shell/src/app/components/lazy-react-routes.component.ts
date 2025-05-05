@@ -58,10 +58,15 @@ export class LazyReactRoutesComponent
       this.loading = true;
       console.log('LazyReactRoutesComponent initialized');
 
+      // Fetch remotes.json at runtime
+      const response = await fetch('/assets/remotes.json');
+      const remotes = await response.json();
+      const remoteEntryUrl = remotes['compliance'];
+
       // Load the remote App component from MFE
       const remoteModule = await loadRemoteModule({
         type: 'module',
-        remoteEntry: 'http://localhost:4202/assets/remoteEntry.js',
+        remoteEntry: remoteEntryUrl,
         exposedModule: './App',
       });
 
