@@ -6,6 +6,17 @@ import { loadRemoteModule } from '@angular-architects/module-federation';
   template: '<compliance-mfe></compliance-mfe>',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  styles: [
+    `
+      :host {
+        display: block;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        overflow: auto;
+      }
+    `,
+  ],
 })
 export class FederatedComplianceComponent {
   constructor() {
