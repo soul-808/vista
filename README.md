@@ -88,6 +88,16 @@ Run Frontend: `yarn start`
 2. Run: `oc apply -f ci/openshift/postgres-secret.yaml`
 2. Run: `./ci./ci/build-and-deploy-be.sh`
 3. Run: `./ci/build-and-deploy-fe.sh`
+  ./ci/build-and-deploy-mfe.sh compliance
+  ./ci/build-and-deploy-mfe.sh infrastructure
+  ./ci/build-and-deploy-mfe.sh summary
+  <!-- Validation -->
+  oc get pods -l app=vista-compliance
+  oc get pods -l app=vista-infrastructure
+  oc get pods -l app=vista-summary
+  oc get route vista-compliance -o yaml
+  oc get route vista-infrastructure -o yaml
+  oc get route vista-summary -o yaml
 
 > 💡 **Tip**: For CI/CD, install Jenkins via OperatorHub and apply `ci/openshift/jenkins-cr.yaml`. See `Jenkinsfile` for pipeline config.
 
@@ -267,3 +277,134 @@ docker buildx build --platform linux/amd64,linux/arm64 -t soul808/vista-frontend
 
 docker buildx create --use --name multiarch-builder
 docker buildx inspect --bootstrap
+
+# OpenShift Modular Frontend Deployment (MFEs & Shell)
+
+## Overview
+This project uses a modular frontend architecture (MFEs) and a shell (host) app, all deployable to OpenShift with automated scripts and environment-specific configuration.
+
+---
+
+## 1. Environment Configuration for Shell
+- The shell uses `src/environments/environment.openshift.ts` for OpenShift deployments.
+- RemoteEntry URLs for each MFE are set here:
+  ```ts
+  export const environment = {
+    production: true,
+    complianceRemote: 'https://<your-cluster-domain>/compliance/remoteEntry.js',
+    infrastructureRemote: 'https://<your-cluster-domain>/infrastructure/remoteEntry.js',
+    summaryRemote: 'https://<your-cluster-domain>/summary/remoteEntry.js',
+    // ...
+  };
+  ```
+- The Angular build config in `angular.json` uses file replacement to swap in this file for OpenShift builds.
+
+---
+
+## 2. Building & Deploying
+
+### Backend
+  oc scale statefulset postgres --replicas=1
+oc apply -f ci/openshift/backend-secrets.yaml
+./ci/build-and-deploy-be.sh
+
+### Shell
+- Use the script:
+  ```bash
+  ./ci/build-and-deploy-shell.sh
+  ```
+- This will:
+  - Build the shell with the OpenShift config
+  - Build and push the Docker image
+  - Prune old images
+  - Update the deployment YAML
+  - Deploy to OpenShift
+
+### MFEs
+- Use the script for each MFE:
+  ```bash
+  ./ci/build-and-deploy-mfe.sh <mfe-name>
+  # e.g.
+  ./ci/build-and-deploy-mfe.sh compliance
+  ./ci/build-and-deploy-mfe.sh infrastructure
+  ./ci/build-and-deploy-mfe.sh summary
+  ```
+
+---
+
+## 3. OpenShift Manifests
+- Each app (shell and MFEs) has a deployment, service, and route YAML in `ci/openshift/`.
+- These are updated and applied by the scripts above.
+
+---
+
+## 4. CI/CD Integration
+- Add the build-and-deploy scripts to your Jenkinsfile or other CI/CD pipeline for automated deployments.
+
+---
+
+## 5. Validation
+- Check pod and route status:
+  ```bash
+  oc get pods -l app=vista-frontend
+  oc get pods -l app=vista-compliance
+  oc get pods -l app=vista-infrastructure
+  oc get pods -l app=vista-summary
+  oc get route
+  ```
+- Test in browser:
+  - `https://<your-cluster-domain>/`
+  - `https://<your-cluster-domain>/compliance`
+  - `https://<your-cluster-domain>/infrastructure`
+  - `https://<your-cluster-domain>/summary`
+
+---
+
+## 6. Advanced: Runtime Remote Config (Optional)
+- You can load remoteEntry URLs at runtime (not just build time) by serving a JSON config (e.g., `/assets/remotes.json`) and fetching it in your shell at startup.
+- This allows you to change remote endpoints without rebuilding the shell.
+- See below for more details.
+
+## 7. Advanced: Runtime Remote Config for Angular Shell
+
+Instead of hardcoding remoteEntry URLs at build time, you can load them dynamically at runtime. This allows you to update remote endpoints without rebuilding or redeploying the shell.
+
+### 1. Create a JSON Config
+Place a file like `remotes.json` in your shell's `src/assets/`:
+```json
+{
+  "complianceRemote": "https://<your-cluster-domain>/compliance/remoteEntry.js",
+  "infrastructureRemote": "https://<your-cluster-domain>/infrastructure/remoteEntry.js",
+  "summaryRemote": "https://<your-cluster-domain>/summary/remoteEntry.js"
+}
+```
+
+### 2. Fetch the Config at Runtime
+In your shell's `main.ts` (or before bootstrapping the app), fetch this config:
+```ts
+// src/main.ts
+fetch('/assets/remotes.json')
+  .then(response => response.json())
+  .then(remotes => {
+    window['remoteConfig'] = remotes;
+    import('./bootstrap').then(({ bootstrap }) => bootstrap());
+  });
+```
+
+### 3. Use the Config in Module Federation
+When setting up your remotes (e.g., in your custom webpack config or dynamic federation logic), reference `window['remoteConfig']`:
+```ts
+const remotes = window['remoteConfig'];
+const complianceRemoteUrl = remotes.complianceRemote;
+// Use this URL to load the remoteEntry.js dynamically
+```
+
+### 4. Update remotes.json Without Rebuilding
+You can now update `remotes.json` in your deployed assets (e.g., via a script or manually), and the shell will pick up new remote URLs on the next page load.
+
+#### Benefits
+- No rebuild/redeploy needed for remote URL changes.
+- Easier blue/green or canary deployments for MFEs.
+- Centralized config for all remotes.
+
+If you want a full code sample or help wiring this into your Angular shell, just ask!

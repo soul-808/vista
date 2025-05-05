@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vista-frontend
+  name: vista-summary
   labels:
-    app: vista-frontend
+    app: vista-summary
   annotations:
-    timestamp: "20250505154952"
+    timestamp: "20250505161222"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: vista-frontend
+      app: vista-summary
   template:
     metadata:
       labels:
-        app: vista-frontend
+        app: vista-summary
     spec:
       containers:
-      - name: vista-frontend
-        image: docker.io/soul808/vista-frontend:latest-20250505154952
+      - name: vista-summary
+        image: docker.io/soul808/vista-summary:latest-20250505161222
         imagePullPolicy: Always
         env:
         - name: API_URL
@@ -51,12 +51,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: vista-frontend
+  name: vista-summary
   labels:
-    app: vista-frontend
+    app: vista-summary
 spec:
   selector:
-    app: vista-frontend
+    app: vista-summary
   ports:
   - port: 8080
     targetPort: 8080
@@ -65,15 +65,16 @@ spec:
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: vista-frontend
+  name: vista-summary
   labels:
-    app: vista-frontend
+    app: vista-summary
 spec:
   to:
     kind: Service
-    name: vista-frontend
+    name: vista-summary
   port:
     targetPort: 8080
+  path: /
   tls:
     termination: edge
-    insecureEdgeTerminationPolicy: Redirect
+    insecureEdgeTerminationPolicy: Redirect 

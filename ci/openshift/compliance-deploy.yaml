@@ -1,25 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vista-frontend
+  name: vista-compliance
   labels:
-    app: vista-frontend
+    app: vista-compliance
   annotations:
-    timestamp: "20250505154952"
+    timestamp: "20250505161547"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: vista-frontend
+      app: vista-compliance
   template:
     metadata:
       labels:
-        app: vista-frontend
+        app: vista-compliance
     spec:
       containers:
-      - name: vista-frontend
-        image: docker.io/soul808/vista-frontend:latest-20250505154952
+      - name: vista-compliance
+        image: docker.io/soul808/vista-compliance:latest-20250505161547
         imagePullPolicy: Always
+        command:
+          - nginx
+          - "-g"
+          - "daemon off;"
+          - "-c"
+          - "/etc/nginx/nginx.conf"
         env:
         - name: API_URL
           value: https://vista-backend-brandonarka3-dev.apps.rm3.7wse.p1.openshiftapps.com/api
@@ -51,12 +57,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: vista-frontend
+  name: vista-compliance
   labels:
-    app: vista-frontend
+    app: vista-compliance
 spec:
   selector:
-    app: vista-frontend
+    app: vista-compliance
   ports:
   - port: 8080
     targetPort: 8080
@@ -65,15 +71,16 @@ spec:
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: vista-frontend
+  name: vista-compliance
   labels:
-    app: vista-frontend
+    app: vista-compliance
 spec:
   to:
     kind: Service
-    name: vista-frontend
+    name: vista-compliance
   port:
     targetPort: 8080
+  path: /
   tls:
     termination: edge
-    insecureEdgeTerminationPolicy: Redirect
+    insecureEdgeTerminationPolicy: Redirect 

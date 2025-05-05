@@ -21,8 +21,11 @@ public class VistaBackendApplication {
 			// Also check parent directory (in case we're in apps/backend)
 			File parentEnvFile = new File(currentDir + "/../.env");
 			
-			// Try to load from current directory
-			Dotenv dotenv = Dotenv.configure().directory(currentDir).load();
+			// Try to load from current directory, ignore if missing
+			Dotenv dotenv = Dotenv.configure()
+			                       .directory(currentDir)
+			                       .ignoreIfMissing()  // Prevent exception if .env is missing
+			                       .load();
 			
 			// Print loaded environment variables (keys only, for security)
 			dotenv.entries().forEach(entry -> {
@@ -34,7 +37,7 @@ public class VistaBackendApplication {
 			System.out.println("Loaded environment variables from .env file");
 		} catch (Exception e) {
 			System.err.println("Warning: Could not load .env file: " + e.getMessage());
-			e.printStackTrace();
+			// Don't print stack trace - it's unnecessary noise
 		}
 		
 		SpringApplication.run(VistaBackendApplication.class, args);

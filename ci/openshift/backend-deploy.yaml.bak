@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: vista-backend
-        image: docker.io/soul808/vista-backend:latest-20250503130453
+        image: docker.io/soul808/vista-backend:latest-20250505145829
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -26,7 +26,7 @@ spec:
         - name: JAVA_OPTS
           value: "-Xms512m -Xmx1024m -XX:+UseG1GC -Dserver.servlet.context-path=/api"
         - name: SPRING_SECURITY_CORS_ALLOWED_ORIGINS
-          value: "https://vista-frontend-brandonarka3-dev.apps.rm3.7wse.p1.openshiftapps.com,http://localhost:3000"
+          value: "https://vista-frontend-brandonarka3-dev.apps.rm3.7wse.p1.openshiftapps.com,https://vista-compliance-brandonarka3-dev.apps.rm3.7wse.p1.openshiftapps.com,https://vista-infrastructure-brandonarka3-dev.apps.rm3.7wse.p1.openshiftapps.com,https://vista-summary-brandonarka3-dev.apps.rm3.7wse.p1.openshiftapps.com,http://localhost:3000"
         - name: SPRING_SECURITY_CORS_ALLOWED_METHODS
           value: "GET,POST,PUT,DELETE,OPTIONS"
         - name: SPRING_SECURITY_CORS_ALLOWED_HEADERS
@@ -48,6 +48,41 @@ spec:
             secretKeyRef:
               name: vista-db-secret
               key: password
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: vista-backend-secrets
+              key: OPENAI_API_KEY
+        - name: OPENAI_API_MODEL
+          valueFrom:
+            secretKeyRef:
+              name: vista-backend-secrets
+              key: OPENAI_API_MODEL
+        - name: OPENAI_API_URL
+          valueFrom:
+            secretKeyRef:
+              name: vista-backend-secrets
+              key: OPENAI_API_URL
+        - name: PINECONE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: vista-backend-secrets
+              key: PINECONE_API_KEY
+        - name: PINECONE_ENVIRONMENT
+          valueFrom:
+            secretKeyRef:
+              name: vista-backend-secrets
+              key: PINECONE_ENVIRONMENT
+        - name: PINECONE_INDEX_NAME
+          valueFrom:
+            secretKeyRef:
+              name: vista-backend-secrets
+              key: PINECONE_INDEX_NAME
+        - name: PINECONE_PROJECT_NAME
+          valueFrom:
+            secretKeyRef:
+              name: vista-backend-secrets
+              key: PINECONE_PROJECT_NAME
         resources:
           limits:
             cpu: "1000m"
@@ -57,16 +92,12 @@ spec:
             memory: "512Mi"
         readinessProbe:
           httpGet:
-            path: /api/health
+            path: /api/actuator/health
             port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 10
         livenessProbe:
           httpGet:
-            path: /api/health
+            path: /api/actuator/health
             port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 15
 ---
 apiVersion: v1
 kind: Service

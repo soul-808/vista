@@ -23,7 +23,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.endsWith("/auth/login");
+        // Skip filtering for login, actuator, and health endpoints (with context path)
+        return path.endsWith("/auth/login") ||
+               path.startsWith("/api/actuator/") ||
+               path.equals("/api/actuator") ||
+               path.equals("/api/health") ||
+               path.startsWith("/api/health");
     }
 
     @Override

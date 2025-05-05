@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vista-frontend
+  name: vista-infrastructure
   labels:
-    app: vista-frontend
+    app: vista-infrastructure
   annotations:
-    timestamp: "20250505154952"
+    timestamp: "<to-be-updated-by-script>"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: vista-frontend
+      app: vista-infrastructure
   template:
     metadata:
       labels:
-        app: vista-frontend
+        app: vista-infrastructure
     spec:
       containers:
-      - name: vista-frontend
-        image: docker.io/soul808/vista-frontend:latest-20250505154952
+      - name: vista-infrastructure
+        image: docker.io/soul808/vista-infrastructure:latest
         imagePullPolicy: Always
         env:
         - name: API_URL
@@ -51,12 +51,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: vista-frontend
+  name: vista-infrastructure
   labels:
-    app: vista-frontend
+    app: vista-infrastructure
 spec:
   selector:
-    app: vista-frontend
+    app: vista-infrastructure
   ports:
   - port: 8080
     targetPort: 8080
@@ -65,15 +65,16 @@ spec:
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: vista-frontend
+  name: vista-infrastructure
   labels:
-    app: vista-frontend
+    app: vista-infrastructure
 spec:
   to:
     kind: Service
-    name: vista-frontend
+    name: vista-infrastructure
   port:
     targetPort: 8080
+  path: /infrastructure(/|$)(.*)
   tls:
     termination: edge
-    insecureEdgeTerminationPolicy: Redirect
+    insecureEdgeTerminationPolicy: Redirect 

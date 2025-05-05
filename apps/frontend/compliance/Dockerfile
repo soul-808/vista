@@ -1,6 +1,4 @@
-# Path: apps/frontend/shell/Dockerfile
-
-# Stage 1: Build Angular shell app
+# Stage 1: Build Angular compliance app
 FROM --platform=$BUILDPLATFORM node:18 AS build
 
 WORKDIR /app
@@ -13,20 +11,20 @@ RUN corepack prepare yarn@4.9.1 --activate
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn .yarn
 COPY libs ./libs
-COPY apps/frontend/shell ./apps/frontend/shell
+COPY apps/frontend/compliance ./apps/frontend/compliance
 
 # Install dependencies
 RUN yarn install
 
-# Build the shell app
-WORKDIR /app/apps/frontend/shell
+# Build the compliance app
+WORKDIR /app/apps/frontend/compliance
 RUN yarn build
 
 # Debug: Show the contents of the dist directory
-RUN echo "=== Contents of dist/shell ===" && \
-    ls -la dist/shell && \
-    echo "=== Contents of dist/shell/browser ===" && \
-    ls -la dist/shell/browser || true
+RUN echo "=== Contents of dist/compliance ===" && \
+    ls -la dist/compliance && \
+    echo "=== Contents of dist/compliance/browser ===" && \
+    ls -la dist/compliance/browser || true
 
 # Stage 2: Serve with NGINX
 FROM --platform=$TARGETPLATFORM registry.access.redhat.com/ubi8/nginx-120:latest
@@ -35,13 +33,13 @@ FROM --platform=$TARGETPLATFORM registry.access.redhat.com/ubi8/nginx-120:latest
 USER 0
 
 # Copy the built app to nginx html directory
-COPY --from=build /app/apps/frontend/shell/dist/shell /opt/app-root/src
+COPY --from=build /app/apps/frontend/compliance/dist/compliance/browser /opt/app-root/src
 
 # Copy the NGINX config
-COPY apps/frontend/shell/nginx.conf /etc/nginx/conf.d/default.conf
+COPY apps/frontend/compliance/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy the entrypoint script
-COPY apps/frontend/shell/entrypoint.sh /opt/app-root/entrypoint.sh
+COPY apps/frontend/compliance/entrypoint.sh /opt/app-root/entrypoint.sh
 
 # Fix permissions
 RUN chown -R 1001:0 /opt/app-root && \
@@ -59,4 +57,4 @@ USER 1001
 EXPOSE 8080
 
 ENTRYPOINT []
-CMD ["/opt/app-root/entrypoint.sh"]
+CMD ["/opt/app-root/entrypoint.sh"] 

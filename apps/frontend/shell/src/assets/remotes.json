@@ -1,0 +1,5 @@
+{
+  "compliance": "https://vista-compliance-brandonarka3-dev.apps.rm3.7wse.p1.openshiftapps.com/assets/remoteEntry.js",
+  "infrastructure": "https://vista-infrastructure-brandonarka3-dev.apps.rm3.7wse.p1.openshiftapps.com/assets/remoteEntry.js",
+  "summary": "https://vista-summary-brandonarka3-dev.apps.rm3.7wse.p1.openshiftapps.com/assets/remoteEntry.js"
+} 

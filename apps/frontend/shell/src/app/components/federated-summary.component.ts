@@ -43,15 +43,11 @@ export class FederatedSummaryComponent implements OnInit {
   async ngOnInit() {
     try {
       this.loading = true;
-      console.log('Loading summary web component...');
+      // Fetch remotes.json at runtime
+      const response = await fetch('/assets/remotes.json');
+      const remotes = await response.json();
+      const remoteEntryUrl = remotes['summary'];
 
-      // Determine if we're in development or production mode
-      const isDev = window.location.hostname === 'localhost';
-      const remoteEntryUrl = isDev
-        ? 'http://localhost:4203/remoteEntry.js'
-        : 'http://localhost:4203/assets/remoteEntry.js';
-
-      console.log('Environment:', isDev ? 'Development' : 'Production');
       console.log('Remote entry URL:', remoteEntryUrl);
 
       // Load the web component

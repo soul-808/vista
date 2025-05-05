@@ -67,3 +67,5 @@ coverage/
 # Local Files
 backups/
 apps/backend/.env
+
+*secrets.yaml

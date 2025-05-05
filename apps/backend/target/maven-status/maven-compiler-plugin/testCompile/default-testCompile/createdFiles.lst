@@ -1,2 +1,4 @@
 com/vista/backend/VistaBackendApplicationTests.class
 com/vista/backend/controller/UserControllerTest.class
+com/vista/backend/service/ComplianceDocumentRagIntegrationTest.class
+com/vista/backend/service/ChatServiceTest.class
